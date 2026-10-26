@@ -89,3 +89,14 @@ the whole line item. The cap keeps ideas additive and the budget coherent.
 **Why.** Same origin means no CORS and a strict `connect-src 'self'` CSP; one deploy, one URL.
 **Cost.** Static files are served by Node rather than a CDN; mitigated by immutable caching of
 fingerprinted assets and gzip.
+
+## ADR-11 — Gemini 3.6 Flash with minimal thinking, Flash-Lite behind it
+
+**Decision.** `gemini-3.6-flash` is the primary model, called with `thinkingLevel: MINIMAL` and a
+10 s timeout, with `gemini-3.1-flash-lite` and `gemini-flash-lite-latest` as fallbacks.
+**Why.** Flash extracted priorities Flash-Lite missed and wrote more specific, better-costed
+ideas. Minimal thinking is required, not optional: with default thinking it spent the output
+budget on reasoning tokens and returned truncated JSON.
+**Cost.** Flash is slower and its latency is volatile (2.5 s to over 40 s measured), and its free
+tier allows 5 requests a minute. The 10 s handover bounds the wait; under load, answers come from
+Flash-Lite.

@@ -2,10 +2,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 const generateContent = vi.fn(() => Promise.resolve({ text: '{"bound":true}' }));
 
-vi.mock('@google/genai', () => ({
+// Only the client class is replaced; enums such as ThinkingLevel stay real.
+vi.mock(import('@google/genai'), async (importOriginal) => ({
+  ...(await importOriginal()),
   GoogleGenAI: class {
     readonly models = { generateContent };
-  },
+  } as never,
 }));
 
 const { createGeminiClientFromKey } = await import('./gemini-client.js');

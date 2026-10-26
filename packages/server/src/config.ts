@@ -11,7 +11,13 @@ export interface ServerConfig {
   readonly staticDir: string | null;
 }
 
+/**
+ * Gemini 3.6 Flash first for answer quality. Its free tier allows five requests
+ * a minute per project, so the Flash-Lite models behind it take over when it is
+ * busy or rate-limited rather than the host seeing an error.
+ */
 export const DEFAULT_MODELS: readonly string[] = [
+  'gemini-3.6-flash',
   'gemini-3.1-flash-lite',
   'gemini-flash-lite-latest',
 ];

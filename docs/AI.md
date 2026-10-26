@@ -1,10 +1,10 @@
 # How Utsav uses Gemini
 
-|                |                                                                                                                                                                                                                                                        |
-| :------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Models**     | `gemini-3.1-flash-lite`, falling back to `gemini-flash-lite-latest` (configurable with `GEMINI_MODEL` / `GEMINI_MODELS`)                                                                                                                               |
-| **SDK**        | `@google/genai`, called only from the server ([`gemini-client.ts`](../packages/server/src/llm/gemini-client.ts))                                                                                                                                       |
-| **Every call** | `responseMimeType: application/json`, `responseJsonSchema`, system instruction, per-purpose `maxOutputTokens` (guard 120, extract 600, ideas 1200), 15 s abort, 2 attempts with backoff on 5xx, next model on failure, 429 reported as quota exhausted |
+|                |                                                                                                                                                                                                                                                                                                |
+| :------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Models**     | `gemini-3.6-flash` first, then `gemini-3.1-flash-lite` and `gemini-flash-lite-latest` (configurable with `GEMINI_MODEL` / `GEMINI_MODELS`)                                                                                                                                                     |
+| **SDK**        | `@google/genai`, called only from the server ([`gemini-client.ts`](../packages/server/src/llm/gemini-client.ts))                                                                                                                                                                               |
+| **Every call** | `responseMimeType: application/json`, `responseJsonSchema`, system instruction, `thinkingLevel: MINIMAL`, per-purpose `maxOutputTokens` (guard 120, extract 600, ideas 1200), 10 s abort per model, 2 attempts with backoff on 5xx, next model on any failure, 429 reported as quota exhausted |
 
 ## 1. Brief extraction — reading the host's words
 
@@ -22,7 +22,8 @@ _Flow:_ [`extract-brief.ts`](../packages/server/src/extract/extract-brief.ts)
   only priorities valid for the event type. `findMissingFields` turns gaps into questions.
 
 Measured on the three sample prompts: all fields extracted correctly, including "a Sunday about
-10 weeks from now" → the correct Sunday and "1.5 lakh" → 150000; 1.7–1.9 s per request warm.
+10 weeks from now" → the correct Sunday and "1.5 lakh" → 150000. Gemini 3.6 Flash also
+read "Photos matter most" as the `photography` priority, which Flash-Lite missed.
 
 ## 2. Injection judge — an independent classifier
 
@@ -48,6 +49,17 @@ _Flow:_ [`generate-ideas.ts`](../packages/server/src/ideas/generate-ideas.ts)
 - Every idea is validated on its own: real category, cost ≤ 60% of it, no links/emails/phone
   numbers, no instruction-like text, not a duplicate; text is cleaned of control characters.
 - The UI shows each idea's cost and its share of the category, labelled "AI suggestion".
+
+## Why Gemini 3.6 Flash, and how it is kept fast
+
+- **Quality.** On the same prompts it extracted priorities Flash-Lite missed and wrote more specific,
+  better-costed ideas (12–24% of their category, against Flash-Lite's tendency to sit at the cap).
+- **Thinking is set to minimal.** With default thinking, 3.6 Flash spent the whole output budget
+  on reasoning tokens and returned truncated JSON (`finishReason: MAX_TOKENS`). These calls are
+  constrained reading and writing tasks with fixed schemas; they do not need extended reasoning.
+- **Fallback is part of the design.** Its free tier allows 5 requests a minute per project, and its
+  latency varied from 2.5 s to over 40 s under load in testing. Each model gets 10 s; a slow, failed
+  or rate-limited answer hands over to Flash-Lite, so the host gets an answer rather than an error.
 
 ## Failure handling
 

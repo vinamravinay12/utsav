@@ -24,7 +24,7 @@ writes words; a deterministic engine decides everything with a number or a date 
 │            Zod per idea ─► validateIdeas against the plan           │
 │                                                                     │
 │   TTL cache (500 entries, 15 min) · Gemini adapter (retry, model    │
-│   fallback, 15 s timeout, schema-constrained JSON)                  │
+│   fallback, 10 s timeout, minimal thinking, schema-constrained JSON)│
 │   serves packages/client/dist (immutable assets, no-cache shell)    │
 └─────────────────────────────────────────────────────────────────────┘
 ```

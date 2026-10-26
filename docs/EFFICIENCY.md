@@ -58,19 +58,21 @@ The first profile showed the calendar export at **413 µs p50** — out of line 
 short lines untouched and counts bytes incrementally: **56.6 µs p50, 7.3× faster**, with the same
 tests passing.
 
-## Model latency (Gemini, measured from server logs)
+## Model latency (Gemini, measured)
 
-| Call                              |                             Typical | Notes                                                 |
-| :-------------------------------- | ----------------------------------: | :---------------------------------------------------- |
-| Injection judge                   |                           1.0–1.6 s | runs in parallel with extraction                      |
-| Brief extraction                  |                           1.7–1.9 s | first call after a cold start ~8.8 s                  |
-| **Extraction request end to end** | **1.7–2.1 s** (2.1 s measured live) | ≈ the slower of the two parallel calls, not their sum |
-| Personalised ideas                |                              ~2.6 s | only when the host asks                               |
-| Repeat of either request          |                              < 1 ms | served from the TTL cache                             |
-| Blatant injection                 |                             0.12 ms | pattern screen, no model call                         |
+| Call                     | Gemini 3.6 Flash (primary) | Flash-Lite (fallback) | Notes                            |
+| :----------------------- | -------------------------: | --------------------: | :------------------------------- |
+| Injection judge          |                  1.6–2.7 s |             1.0–1.6 s | runs in parallel with extraction |
+| Brief extraction         |                 2.5–16.8 s |             1.7–2.1 s | Flash latency varies with load   |
+| Personalised ideas       |                    30–46 s |                ~2.6 s | only when the host asks          |
+| Repeat of either request |                     < 1 ms |                < 1 ms | served from the TTL cache        |
+| Blatant injection        |               0.07 ms live |                     — | pattern screen, no model call    |
 
-Model calls are bounded: per-purpose `maxOutputTokens` (120 / 600 / 1200), a 15 s abort signal,
-two attempts on 5xx, then the fallback model.
+Every call runs with `thinkingLevel: MINIMAL` (default thinking on 3.6 Flash took 6.4 s and
+still truncated the answer) and per-purpose `maxOutputTokens` (120 / 600 / 1200). Each model gets
+a **10 s abort**; beyond that, or on a 5xx or rate limit, the next model answers. The worst case for
+a host is therefore about 10 s plus a Flash-Lite answer, not an unbounded wait. Extraction latency is
+the slower of the two parallel calls, not their sum.
 
 ## Lighthouse
 

@@ -79,7 +79,8 @@ Utsav gives the host a **plan they can act on and trust**:
 
 ## 🤖 How AI is used (Google Gemini)
 
-Utsav uses **Gemini (`gemini-3.1-flash-lite`, falling back to `gemini-flash-lite-latest`)** through
+Utsav uses **Gemini 3.6 Flash (`gemini-3.6-flash`)**, falling back to `gemini-3.1-flash-lite` and
+`gemini-flash-lite-latest` when it is slow or rate-limited, through
 the official `@google/genai` SDK, **server-side only**. There are three distinct calls:
 
 | Call                   | Where                                                                                              | What Gemini does                                                                                                                                                                                       | How its output is constrained                                                                                                                                                                                                                           |

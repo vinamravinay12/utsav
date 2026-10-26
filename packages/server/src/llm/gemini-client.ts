@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { describeCause, logEvent } from '../logging/log.js';
 import {
   LlmQuotaExceededError,
@@ -16,14 +16,29 @@ export const sleep = (ms: number): Promise<void> =>
 
 export const DEFAULT_RETRY: RetryOptions = { attempts: 2, baseDelayMs: 500, delay: sleep };
 
-/** A hung upstream call must not hold a request (and a Cloud Run slot) open. */
-export const REQUEST_TIMEOUT_MS = 15_000;
+/**
+ * Per model, not per request. A hung call must not hold a Cloud Run slot open,
+ * and Gemini 3.6 Flash latency varies widely under load (2.5 s to 17 s measured),
+ * so a slow answer hands over to the faster Flash-Lite fallback instead.
+ */
+export const REQUEST_TIMEOUT_MS = 10_000;
 
 /** Ceilings sized to each schema: a guard verdict is tiny, four ideas are not. */
 export const MAX_OUTPUT_TOKENS: Readonly<Record<LlmPurpose, number>> = {
   guard: 120,
   extract: 600,
   ideas: 1200,
+};
+
+/**
+ * Thinking is kept to a minimum. Every call is a constrained reading or writing
+ * task with a fixed schema, and on Gemini 3.6 Flash default thinking spent the
+ * whole output budget on reasoning tokens and returned truncated JSON.
+ */
+export const THINKING_LEVEL: Readonly<Record<LlmPurpose, ThinkingLevel>> = {
+  guard: ThinkingLevel.MINIMAL,
+  extract: ThinkingLevel.MINIMAL,
+  ideas: ThinkingLevel.MINIMAL,
 };
 
 /** The shape of the SDK call this adapter makes, so tests can substitute it. */
@@ -52,6 +67,7 @@ export function createGeminiClient(
           systemInstruction: request.systemInstruction,
           temperature: request.temperature,
           maxOutputTokens: MAX_OUTPUT_TOKENS[request.purpose],
+          thinkingConfig: { thinkingLevel: THINKING_LEVEL[request.purpose] },
           responseMimeType: 'application/json',
           responseJsonSchema: request.schema,
           abortSignal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
