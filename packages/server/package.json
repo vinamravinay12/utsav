@@ -1,0 +1,20 @@
+{
+  "name": "@utsav/server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Utsav API: holds the Gemini key, guards and validates every model call, serves the client",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node --env-file-if-exists=.env dist/index.js",
+    "dev": "tsc -b && node --env-file-if-exists=.env dist/index.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.31.0",
+    "@utsav/core": "1.0.0",
+    "compression": "^1.8.2",
+    "express": "^5.3.0",
+    "zod": "^4.6.7"
+  }
+}

@@ -1,0 +1,85 @@
+name: Verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Format, lint, typecheck, test (100% coverage), build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # One gate: format:check -> lint -> typecheck -> coverage -> build.
+      - run: npm run verify
+      - name: Profile the engine and server
+        run: npm run profile
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bundle-has-no-secrets:
+    name: Client bundle carries no credentials
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      # Vite inlines anything it can see, so this is checked rather than assumed.
+      - name: Assert no API key in the built client
+        run: |
+          if grep -rEl 'AIza[A-Za-z0-9_-]{20,}' packages/client/dist/; then
+            echo "::error::An API-key-shaped string was found in the client bundle"; exit 1
+          fi
+          if grep -rl 'GEMINI_API_KEY' packages/client/dist/; then
+            echo "::error::GEMINI_API_KEY referenced in the client bundle"; exit 1
+          fi
+          echo "No credentials found in the client bundle."
+
+  container:
+    name: Container builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t utsav .

@@ -1,0 +1,17 @@
+{
+  "name": "@utsav/client",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Utsav web client",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@utsav/core": "1.0.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}
