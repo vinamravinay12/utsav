@@ -52,8 +52,9 @@ JavaScript runs. CORS is off by default because the client is same-origin.
 
 - `GEMINI_API_KEY` from Secret Manager (`--set-secrets`); never logged — health reports only the mode.
 - CI: `npm audit --audit-level=high`, gitleaks, CodeQL (`security-extended`), bundle-secret check.
-- Dependabot for npm and GitHub Actions; minimal runtime dependencies (express, zod, compression,
-  @google/genai).
+- `npm audit` gates every push; dependency updates are applied deliberately on `main` rather
+  than by an update bot, so the repository keeps a single branch. Runtime dependencies are minimal
+  (express, zod, compression, @google/genai).
 - Container runs as the unprivileged `node` user with production dependencies only.
 
 ## Privacy

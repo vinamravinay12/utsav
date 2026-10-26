@@ -17,6 +17,9 @@ export default defineConfig({
           name: 'client',
           environment: 'jsdom',
           include: ['packages/client/src/**/*.test.{ts,tsx}'],
+          // Full-journey tests render the app and run axe at every step; shared
+          // CI runners need more than the 5 s default for that.
+          testTimeout: 20_000,
           setupFiles: ['./packages/client/src/test-utils/setup.ts'],
         },
       },
