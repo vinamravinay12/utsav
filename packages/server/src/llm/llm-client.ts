@@ -21,6 +21,7 @@ export interface LlmClient {
   generate(request: LlmRequest): Promise<string>;
 }
 
+/** Every configured model failed; the host can try again or fill in the form. */
 export class LlmUnavailableError extends Error {
   constructor(message: string) {
     super(message);

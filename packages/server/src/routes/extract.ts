@@ -4,6 +4,7 @@ import { resolveToday } from '../extract/resolve-today.js';
 import { DESCRIPTION_LIMITS, extractRequestSchema } from '../validation/schemas.js';
 import { respondToLlmError } from './llm-errors.js';
 
+/** POST /api/extract — reads a description into a draft brief. */
 export function extractRouter(dependencies: ExtractDependencies, now: () => Date): Router {
   const router = Router();
   router.post('/extract', async (request, response) => {

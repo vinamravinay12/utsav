@@ -52,6 +52,7 @@ function Actions({
   );
 }
 
+/** Event summary, countdown, readiness and the plan-level actions. */
 export function PlanHeader({
   plan,
   progress,

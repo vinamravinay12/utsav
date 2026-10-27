@@ -1,97 +1,59 @@
 import { AGE_GROUPS, BRIEF_LIMITS, DIETARY, INTERESTS, SETTINGS, STYLES } from '@utsav/core';
-import type { SectionProps } from './BriefSections.js';
 import { ChoiceGroup } from './ChoiceGroup.js';
 import { InputField, SelectField } from './fields.js';
+import {
+  bindInput,
+  bindMultiChoice,
+  bindSingleChoice,
+  type BriefSectionProps,
+} from './form-bindings.js';
 import { FormSection } from './FormSection.js';
 import { priorityOptions } from './form-values.js';
 
-export function PlaceSection({ values, errors, set }: SectionProps): React.JSX.Element {
+/** City, audience, setting and style. */
+export function PlaceSection(form: BriefSectionProps): React.JSX.Element {
   return (
     <FormSection title="Place and feel">
       <div className="grid gap-4 sm:grid-cols-2">
         <InputField
           label="City or town"
           type="text"
-          value={values.city}
           maxLength={BRIEF_LIMITS.maxCityLength}
-          error={errors.city}
-          onChange={(value) => {
-            set('city', value);
-          }}
+          {...bindInput(form, 'city')}
         />
         <SelectField
           label="Who are the guests?"
-          value={values.ageGroup}
           options={AGE_GROUPS}
-          error={errors.ageGroup}
-          onChange={(value) => {
-            set('ageGroup', value);
-          }}
+          {...bindInput(form, 'ageGroup')}
         />
       </div>
-      <ChoiceGroup
-        legend="Setting"
-        name="setting"
-        options={SETTINGS}
-        selected={values.setting === '' ? [] : [values.setting]}
-        error={errors.setting}
-        onChange={([setting = '']) => {
-          set('setting', setting);
-        }}
-      />
-      <ChoiceGroup
-        legend="Style"
-        name="style"
-        options={STYLES}
-        selected={values.style === '' ? [] : [values.style]}
-        error={errors.style}
-        onChange={([style = '']) => {
-          set('style', style);
-        }}
-      />
+      <ChoiceGroup legend="Setting" options={SETTINGS} {...bindSingleChoice(form, 'setting')} />
+      <ChoiceGroup legend="Style" options={STYLES} {...bindSingleChoice(form, 'style')} />
     </FormSection>
   );
 }
 
-export function PreferenceSection({ values, set }: SectionProps): React.JSX.Element {
-  const priorities = priorityOptions(values.eventType);
+/** Budget priorities, interests and dietary needs — all optional. */
+export function PreferenceSection(form: BriefSectionProps): React.JSX.Element {
+  const priorities = priorityOptions(form.values.eventType);
   return (
     <FormSection title="What matters to you">
       {priorities.length > 0 && (
         <ChoiceGroup
           legend="Spend more on"
           hint={`Pick up to ${String(BRIEF_LIMITS.maxPriorities)}. These get a bigger share of the budget.`}
-          name="priorities"
-          multiple
           max={BRIEF_LIMITS.maxPriorities}
           options={priorities}
-          selected={values.priorities}
-          onChange={(selected) => {
-            set('priorities', selected);
-          }}
+          {...bindMultiChoice(form, 'priorities')}
         />
       )}
       <ChoiceGroup
         legend="Interests"
         hint="Used to personalise ideas."
-        name="interests"
-        multiple
         options={INTERESTS}
-        selected={values.interests}
-        onChange={(selected) => {
-          set('interests', selected);
-        }}
+        {...bindMultiChoice(form, 'interests')}
       />
-      <ChoiceGroup
-        legend="Dietary needs"
-        name="dietary"
-        multiple
-        options={DIETARY}
-        selected={values.dietary}
-        onChange={(selected) => {
-          set('dietary', selected);
-        }}
-      />
+      <ChoiceGroup legend="Dietary needs" options={DIETARY} {...bindMultiChoice(form, 'dietary')} />
     </FormSection>
   );
 }

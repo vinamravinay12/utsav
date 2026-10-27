@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import type { PlannerAction } from './planner-reducer.js';
 
+/** Shown before discarding a saved plan. */
 export const START_AFRESH_PROMPT =
   'Start afresh? This clears your current plan and all its progress from this browser.';
 

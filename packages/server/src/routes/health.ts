@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+/** GET /api/health — liveness and which model mode is running. */
 export function healthRouter(mode: 'gemini' | 'offline'): Router {
   const router = Router();
   router.get('/health', (_request, response) => {

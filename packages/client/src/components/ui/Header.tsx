@@ -8,6 +8,7 @@ interface HeaderProps {
   readonly onStartAfresh: () => void;
 }
 
+/** Brand link home, Start afresh and the theme choice. */
 export function Header({ theme, onThemeChange, onStartAfresh }: HeaderProps): React.JSX.Element {
   return (
     <header className="no-print border-b border-line bg-card">

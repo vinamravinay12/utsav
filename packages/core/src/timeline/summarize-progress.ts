@@ -2,6 +2,7 @@ import type { ScheduledTask, VendorItem } from '../types/index.js';
 
 export type VendorStatus = 'todo' | 'contacted' | 'quoted' | 'booked';
 
+/** Vendor statuses in the order a booking moves through them. */
 export const VENDOR_STATUSES: readonly VendorStatus[] = ['todo', 'contacted', 'quoted', 'booked'];
 
 export interface ProgressSummary {
@@ -19,7 +20,8 @@ export interface ProgressSummary {
 
 const UP_NEXT_COUNT = 3;
 
-const ratio = (part: number, whole: number): number => (whole === 0 ? 1 : part / whole);
+/** Share of the whole that is done; an empty list counts as complete. */
+const completedShare = (part: number, whole: number): number => (whole === 0 ? 1 : part / whole);
 
 /**
  * Where the plan stands today.
@@ -32,6 +34,7 @@ export interface ProgressState {
   readonly vendorStatus: Readonly<Record<string, VendorStatus>>;
 }
 
+/** Readiness, overdue work and the next tasks, as of `today`. */
 export function summarizeProgress(
   tasks: readonly ScheduledTask[],
   vendors: readonly VendorItem[],
@@ -40,8 +43,8 @@ export function summarizeProgress(
 ): ProgressSummary {
   const pending = tasks.filter((task) => !done.has(task.id));
   const booked = vendors.filter((vendor) => vendorStatus[vendor.id] === 'booked');
-  const taskRatio = ratio(tasks.length - pending.length, tasks.length);
-  const vendorRatio = ratio(booked.length, vendors.length);
+  const taskRatio = completedShare(tasks.length - pending.length, tasks.length);
+  const vendorRatio = completedShare(booked.length, vendors.length);
   return {
     tasksDone: tasks.length - pending.length,
     tasksTotal: tasks.length,

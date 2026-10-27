@@ -4,6 +4,7 @@ import {
   type BudgetLine,
   type EventBrief,
   type EventPlan,
+  AI_IDEA_MAX_CATEGORY_SHARE,
 } from '@utsav/core';
 import { cacheKey, type TtlCache } from '../cache/ttl-cache.js';
 import { detectInjection } from '../guard/detect-injection.js';
@@ -11,12 +12,7 @@ import { logEvent } from '../logging/log.js';
 import type { LlmClient } from '../llm/llm-client.js';
 import { buildIdeasRequest, spendableLines } from '../prompts/build-ideas-prompt.js';
 import { parseJson } from '../prompts/parse-json.js';
-import {
-  IDEA_LIMITS,
-  MAX_SHARE_OF_CATEGORY,
-  ideaCandidateSchema,
-  ideasEnvelopeSchema,
-} from '../validation/schemas.js';
+import { IDEA_LIMITS, ideaCandidateSchema, ideasEnvelopeSchema } from '../validation/schemas.js';
 
 export interface AiIdea {
   readonly title: string;
@@ -67,7 +63,7 @@ export function validateIdeas(
       return [];
     }
     const unsafe = CONTACT_OR_LINK.test(text) || detectInjection(text).length > 0;
-    const affordable = candidate.estimatedCost <= line.amount * MAX_SHARE_OF_CATEGORY;
+    const affordable = candidate.estimatedCost <= line.amount * AI_IDEA_MAX_CATEGORY_SHARE;
     if (unsafe || !affordable || seen.has(title.toLowerCase())) {
       return [];
     }

@@ -36,12 +36,3 @@ export function allocateByWeight<T>(
     amount: Math.floor(exactOf(item)) + (bonus.has(index) ? 1 : 0),
   }));
 }
-
-const INR = new Intl.NumberFormat('en-IN', {
-  style: 'currency',
-  currency: 'INR',
-  maximumFractionDigits: 0,
-});
-
-/** ₹15,00,000 — Indian digit grouping, no paise. */
-export const formatInr = (amount: number): string => INR.format(amount);

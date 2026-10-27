@@ -1,3 +1,4 @@
+/** Lets keyboard users jump past the header; visible only when focused. */
 export function SkipLink(): React.JSX.Element {
   return (
     <a

@@ -20,6 +20,7 @@ export type NormalizedDraft = BriefDraft & Pick<EventBrief, 'priorities' | 'inte
 /** Printable text only: control characters and angle brackets are removed. */
 const UNSAFE_TEXT = /[\p{Cc}<>]/gu;
 
+/** Printable, single-spaced, length-limited text, or undefined if nothing is left. */
 export function cleanText(value: unknown, maxLength: number): string | undefined {
   if (typeof value !== 'string') {
     return undefined;
@@ -28,6 +29,7 @@ export function cleanText(value: unknown, maxLength: number): string | undefined
   return cleaned.length > 0 ? cleaned : undefined;
 }
 
+/** The value if it is a whole number within [min, max], otherwise undefined. */
 export function boundedInteger(value: unknown, min: number, max: number): number | undefined {
   return typeof value === 'number' && Number.isInteger(value) && value >= min && value <= max
     ? value
@@ -50,7 +52,8 @@ export function memberList<T extends string>(
 const categoryIdsFor = (eventType: EventTypeId | undefined): readonly string[] =>
   eventType === undefined ? [] : findTemplate(eventType).budget.map((category) => category.id);
 
-const pick = <T extends string>(ids: readonly T[], value: unknown): T | undefined =>
+/** The value if it belongs to the vocabulary, otherwise undefined. */
+const vocabularyValue = <T extends string>(ids: readonly T[], value: unknown): T | undefined =>
   isMember(ids, value) ? value : undefined;
 
 /**
@@ -61,7 +64,7 @@ const pick = <T extends string>(ids: readonly T[], value: unknown): T | undefine
  * becomes a question for the host, never a guess.
  */
 export function normalizeDraft(raw: Raw): NormalizedDraft {
-  const eventType = pick(EVENT_TYPE_IDS, raw.eventType);
+  const eventType = vocabularyValue(EVENT_TYPE_IDS, raw.eventType);
   const draft: Record<string, unknown> = {
     eventType,
     name: cleanText(raw.name, BRIEF_LIMITS.maxNameLength),
@@ -70,9 +73,9 @@ export function normalizeDraft(raw: Raw): NormalizedDraft {
     guestCount: boundedInteger(raw.guestCount, BRIEF_LIMITS.minGuests, BRIEF_LIMITS.maxGuests),
     totalBudget: boundedInteger(raw.totalBudget, BRIEF_LIMITS.minBudget, BRIEF_LIMITS.maxBudget),
     city: cleanText(raw.city, BRIEF_LIMITS.maxCityLength),
-    setting: pick(SETTING_IDS, raw.setting),
-    style: pick(STYLE_IDS, raw.style),
-    ageGroup: pick(AGE_GROUP_IDS, raw.ageGroup),
+    setting: vocabularyValue(SETTING_IDS, raw.setting),
+    style: vocabularyValue(STYLE_IDS, raw.style),
+    ageGroup: vocabularyValue(AGE_GROUP_IDS, raw.ageGroup),
     priorities: memberList(categoryIdsFor(eventType), raw.priorities, BRIEF_LIMITS.maxPriorities),
     interests: memberList(INTEREST_IDS, raw.interests, INTEREST_IDS.length),
     dietary: memberList(DIETARY_IDS, raw.dietary, DIETARY_IDS.length),

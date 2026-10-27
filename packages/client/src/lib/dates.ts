@@ -27,6 +27,7 @@ export const formatDate = (iso: string): string => DISPLAY.format(new Date(`${is
 export const formatLongDate = (iso: string): string =>
   WITH_WEEKDAY.format(new Date(`${iso}T00:00:00Z`));
 
+/** Days until or since the event, in words. */
 export function describeCountdown(days: number): string {
   if (days === 0) {
     return 'Today';

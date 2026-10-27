@@ -48,6 +48,7 @@ function StatusSelect({ vendor, status, onStatus }: StatusSelectProps): React.JS
         className="field py-1.5 text-sm"
         value={status}
         onChange={(event) => {
+          // The options are rendered from VENDOR_STATUSES, so the value is always one of them.
           onStatus(vendor.id, event.target.value as VendorStatus);
         }}
       >

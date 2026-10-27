@@ -13,5 +13,6 @@ export function logEvent(
   console.log(JSON.stringify({ severity, message, ...fields }));
 }
 
+/** A short, loggable description of any thrown value. */
 export const describeCause = (cause: unknown): string =>
   cause instanceof Error ? cause.message.slice(0, 300) : String(cause);

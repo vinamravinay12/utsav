@@ -1,4 +1,6 @@
+/** Opens the span of host-written text in a prompt. */
 export const FENCE_OPEN = '<<<UNTRUSTED_HOST_TEXT>>>';
+/** Closes the span of host-written text in a prompt. */
 export const FENCE_CLOSE = '<<</UNTRUSTED_HOST_TEXT>>>';
 
 const FENCE_PATTERN = /<<<\/?UNTRUSTED_HOST_TEXT>>>/g;

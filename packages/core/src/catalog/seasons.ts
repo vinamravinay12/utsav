@@ -25,6 +25,8 @@ const SEASON_BY_MONTH: readonly Season[] = [
 /** November to February: the peak wedding months, when venues go first. */
 const PEAK_WEDDING_MONTHS: readonly number[] = [11, 12, 1, 2];
 
+/** The planning season for a month (1–12). */
 export const seasonOf = (month: number): Season => SEASON_BY_MONTH[(month - 1) % 12] ?? 'winter';
 
+/** Whether venues and vendors are in peak wedding demand that month. */
 export const isPeakWeddingMonth = (month: number): boolean => PEAK_WEDDING_MONTHS.includes(month);

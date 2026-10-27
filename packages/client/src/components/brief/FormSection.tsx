@@ -1,3 +1,4 @@
+/** A titled card grouping related brief fields. */
 export function FormSection({
   title,
   children,

@@ -27,8 +27,10 @@ export const EXTRACTION_INSTRUCTION = [
   DATA_NOT_INSTRUCTIONS,
 ].join('\n');
 
+/** JSON Schema the extraction is decoded against. */
 export const EXTRACTION_RESPONSE_SCHEMA = toResponseSchema(extractionSchema);
 
+/** The extraction call for one description: today’s date, the category ids and the fenced text. */
 export function buildExtractionRequest(description: string, today: string): LlmRequest {
   const categories = eventTemplates
     .map((template) => `- ${template.id}: ${categoryList(template)}`)

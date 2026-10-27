@@ -4,6 +4,7 @@
  */
 const RETRYABLE_STATUSES: ReadonlySet<number> = new Set([500, 502, 503, 504]);
 
+/** HTTP status Gemini uses when the quota is spent. */
 export const QUOTA_EXCEEDED_STATUS = 429;
 
 export interface RetryOptions {
@@ -26,9 +27,11 @@ export function statusCodeOf(error: unknown): number | undefined {
   return match === null ? undefined : Number(match[1]);
 }
 
+/** Whether the error is a transient upstream failure worth retrying. */
 export const isRetryable = (error: unknown): boolean =>
   RETRYABLE_STATUSES.has(statusCodeOf(error) ?? 0);
 
+/** Whether the error means the model quota is spent. */
 export const isQuotaExceeded = (error: unknown): boolean =>
   statusCodeOf(error) === QUOTA_EXCEEDED_STATUS;
 

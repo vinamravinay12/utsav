@@ -1,6 +1,7 @@
 import { INTERESTS, STYLES, SETTINGS, labelOf } from '../catalog/vocabulary.js';
 import type { BudgetTier, CostTier, EventBrief, IdeaSpec, RankedIdea } from '../types/index.js';
 
+/** How many catalogue ideas a plan shows. */
 export const IDEA_LIMIT = 6;
 
 /** No more than this many picks from one budget category, so ideas cover the whole event. */
@@ -12,10 +13,11 @@ const AFFORDABLE: Readonly<Record<BudgetTier, readonly CostTier[]>> = {
   premium: ['low', 'mid', 'high'],
 };
 
-const WEIGHT = { style: 3, interest: 2, setting: 1, audience: 1 } as const;
+/** Points per kind of match; style says most about whether an idea fits the event. */
+const MATCH_WEIGHTS = { style: 3, interest: 2, setting: 1, audience: 1 } as const;
 
 /** Hard constraints: an idea that cannot physically or financially work is never shown. */
-function fits(idea: IdeaSpec, brief: EventBrief, tier: BudgetTier): boolean {
+function isWorkable(idea: IdeaSpec, brief: EventBrief, tier: BudgetTier): boolean {
   const settingOk = idea.settings.length === 0 || idea.settings.includes(brief.setting);
   const audienceOk =
     idea.ageGroups.length === 0 ||
@@ -24,26 +26,26 @@ function fits(idea: IdeaSpec, brief: EventBrief, tier: BudgetTier): boolean {
   return settingOk && audienceOk && AFFORDABLE[tier].includes(idea.costTier);
 }
 
-function score(idea: IdeaSpec, brief: EventBrief): { score: number; reasons: string[] } {
+function scoreMatch(idea: IdeaSpec, brief: EventBrief): { score: number; reasons: string[] } {
   const reasons: string[] = [];
   let total = 0;
   if (idea.styles.includes(brief.style)) {
-    total += WEIGHT.style;
+    total += MATCH_WEIGHTS.style;
     reasons.push(`Matches your ${labelOf(STYLES, brief.style).toLowerCase()} style`);
   }
   const shared = idea.interests.filter((interest) => brief.interests.includes(interest));
-  total += shared.length * WEIGHT.interest;
+  total += shared.length * MATCH_WEIGHTS.interest;
   if (shared.length > 0) {
     reasons.push(
       `Plays to ${shared.map((id) => labelOf(INTERESTS, id).toLowerCase()).join(' and ')}`,
     );
   }
   if (idea.settings.includes(brief.setting)) {
-    total += WEIGHT.setting;
+    total += MATCH_WEIGHTS.setting;
     reasons.push(`Made for an ${labelOf(SETTINGS, brief.setting).toLowerCase()} setting`);
   }
   if (idea.ageGroups.includes(brief.ageGroup)) {
-    total += WEIGHT.audience;
+    total += MATCH_WEIGHTS.audience;
     reasons.push('Right for your guests’ ages');
   }
   return { score: total, reasons };
@@ -79,8 +81,8 @@ export function rankIdeas(
   limit: number = IDEA_LIMIT,
 ): RankedIdea[] {
   return ideas
-    .filter((idea) => fits(idea, brief, tier))
-    .map((idea, order) => ({ idea, order, ...score(idea, brief) }))
+    .filter((idea) => isWorkable(idea, brief, tier))
+    .map((idea, order) => ({ idea, order, ...scoreMatch(idea, brief) }))
     .sort((a, b) => b.score - a.score || a.order - b.order)
     .filter(withinCategoryLimit())
     .slice(0, limit)

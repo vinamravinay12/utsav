@@ -1,4 +1,4 @@
-import { formatInr } from '@utsav/core';
+import { AI_IDEA_MAX_CATEGORY_SHARE, formatInr, formatShare } from '@utsav/core';
 import type { AiIdea } from '../../api/types.js';
 import { Alert } from '../ui/Alert.js';
 import { Badge } from '../ui/Badge.js';
@@ -18,6 +18,7 @@ function buttonLabel(busy: boolean, hasIdeas: boolean): string {
   return hasIdeas ? 'Get different ideas' : 'Get AI ideas';
 }
 
+/** The on-demand Gemini ideas, with loading, empty and error states. */
 export function AiIdeasSection({
   aiIdeas,
   busy,
@@ -33,7 +34,7 @@ export function AiIdeasSection({
       </h2>
       <p className="text-sm text-muted">
         Written for your city, season, style and guests. Every idea is checked against your budget
-        and must fit within 60% of its category.
+        and must fit within {formatShare(AI_IDEA_MAX_CATEGORY_SHARE)} of its category.
       </p>
       <button type="button" className="btn-primary no-print" disabled={busy} onClick={onRequestAi}>
         {buttonLabel(busy, aiIdeas.length > 0)}

@@ -1,102 +1,54 @@
 @import 'tailwindcss';
 
-/* Light is the base, and every token is defined here so none goes undefined
-   when the theme flips. Text tokens are chosen to clear WCAG AA (4.5:1) on
-   both the page ground and the card surface. */
+/* Every colour is defined once, as light-dark(light, dark). Which side applies
+   follows `color-scheme` below, so there is no second copy of the palette to
+   keep in sync. Text tokens are chosen to clear WCAG AA (4.5:1) on both the page
+   ground and the card surface, in both themes. */
 @theme {
   --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
 
-  --color-ink: oklch(0.23 0.03 20);
-  --color-ink-soft: oklch(0.38 0.03 20);
-  --color-muted: oklch(0.48 0.025 20);
-  --color-line: oklch(0.9 0.015 60);
-  --color-surface: oklch(0.982 0.008 80);
-  --color-card: oklch(1 0 0);
+  --color-ink: light-dark(oklch(0.23 0.03 20), oklch(0.95 0.008 80));
+  --color-ink-soft: light-dark(oklch(0.38 0.03 20), oklch(0.86 0.012 80));
+  --color-muted: light-dark(oklch(0.48 0.025 20), oklch(0.75 0.018 80));
+  --color-line: light-dark(oklch(0.9 0.015 60), oklch(0.34 0.02 20));
+  --color-surface: light-dark(oklch(0.982 0.008 80), oklch(0.17 0.015 20));
+  --color-card: light-dark(oklch(1 0 0), oklch(0.22 0.018 20));
 
-  --color-brand: oklch(0.42 0.14 18);
-  --color-brand-deep: oklch(0.32 0.11 18);
-  --color-brand-soft: oklch(0.955 0.025 18);
-  --color-on-brand: oklch(1 0 0);
-  --color-accent: oklch(0.52 0.12 70);
-  --color-accent-soft: oklch(0.96 0.045 85);
+  --color-brand: light-dark(oklch(0.42 0.14 18), oklch(0.8 0.1 25));
+  --color-brand-deep: light-dark(oklch(0.32 0.11 18), oklch(0.28 0.08 18));
+  --color-brand-soft: light-dark(oklch(0.955 0.025 18), oklch(0.29 0.05 18));
+  --color-on-brand: light-dark(oklch(1 0 0), oklch(0.18 0.03 20));
+  --color-accent: light-dark(oklch(0.52 0.12 70), oklch(0.83 0.13 80));
+  --color-accent-soft: light-dark(oklch(0.96 0.045 85), oklch(0.27 0.045 75));
 
-  --color-ok-bg: oklch(0.96 0.04 155);
-  --color-ok-fg: oklch(0.36 0.09 155);
-  --color-ok-solid: oklch(0.5 0.12 155);
-  --color-warn-bg: oklch(0.96 0.05 85);
-  --color-warn-fg: oklch(0.4 0.09 60);
-  --color-warn-solid: oklch(0.6 0.13 70);
-  --color-danger-bg: oklch(0.955 0.035 25);
-  --color-danger-fg: oklch(0.42 0.15 25);
-  --color-danger-solid: oklch(0.52 0.19 25);
-  --color-info-bg: oklch(0.96 0.025 250);
-  --color-info-fg: oklch(0.4 0.1 250);
+  --color-ok-bg: light-dark(oklch(0.96 0.04 155), oklch(0.27 0.05 155));
+  --color-ok-fg: light-dark(oklch(0.36 0.09 155), oklch(0.9 0.08 155));
+  --color-ok-solid: light-dark(oklch(0.5 0.12 155), oklch(0.65 0.13 155));
+  --color-warn-bg: light-dark(oklch(0.96 0.05 85), oklch(0.28 0.05 80));
+  --color-warn-fg: light-dark(oklch(0.4 0.09 60), oklch(0.92 0.08 85));
+  --color-warn-solid: light-dark(oklch(0.6 0.13 70), oklch(0.72 0.13 80));
+  --color-danger-bg: light-dark(oklch(0.955 0.035 25), oklch(0.27 0.07 25));
+  --color-danger-fg: light-dark(oklch(0.42 0.15 25), oklch(0.92 0.06 25));
+  --color-danger-solid: light-dark(oklch(0.52 0.19 25), oklch(0.7 0.17 25));
+  --color-info-bg: light-dark(oklch(0.96 0.025 250), oklch(0.27 0.04 250));
+  --color-info-fg: light-dark(oklch(0.4 0.1 250), oklch(0.9 0.05 250));
 
   --radius-card: 0.875rem;
 }
 
-/* Follows the system unless the host chose light. Pure CSS, so the first paint
+/* Follow the system unless the host chose a theme. Pure CSS, so the first paint
    is already right: the strict CSP forbids the inline script that would
    otherwise be needed. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --color-ink: oklch(0.95 0.008 80);
-    --color-ink-soft: oklch(0.86 0.012 80);
-    --color-muted: oklch(0.75 0.018 80);
-    --color-line: oklch(0.34 0.02 20);
-    --color-surface: oklch(0.17 0.015 20);
-    --color-card: oklch(0.22 0.018 20);
-    --color-brand: oklch(0.8 0.1 25);
-    --color-brand-deep: oklch(0.28 0.08 18);
-    --color-brand-soft: oklch(0.29 0.05 18);
-    --color-on-brand: oklch(0.18 0.03 20);
-    --color-accent: oklch(0.83 0.13 80);
-    --color-accent-soft: oklch(0.27 0.045 75);
-    --color-ok-bg: oklch(0.27 0.05 155);
-    --color-ok-fg: oklch(0.9 0.08 155);
-    --color-ok-solid: oklch(0.65 0.13 155);
-    --color-warn-bg: oklch(0.28 0.05 80);
-    --color-warn-fg: oklch(0.92 0.08 85);
-    --color-warn-solid: oklch(0.72 0.13 80);
-    --color-danger-bg: oklch(0.27 0.07 25);
-    --color-danger-fg: oklch(0.92 0.06 25);
-    --color-danger-solid: oklch(0.7 0.17 25);
-    --color-info-bg: oklch(0.27 0.04 250);
-    --color-info-fg: oklch(0.9 0.05 250);
-  }
-}
-
-/* An explicit choice wins over the system in both directions. */
-:root[data-theme='dark'] {
-  color-scheme: dark;
-  --color-ink: oklch(0.95 0.008 80);
-  --color-ink-soft: oklch(0.86 0.012 80);
-  --color-muted: oklch(0.75 0.018 80);
-  --color-line: oklch(0.34 0.02 20);
-  --color-surface: oklch(0.17 0.015 20);
-  --color-card: oklch(0.22 0.018 20);
-  --color-brand: oklch(0.8 0.1 25);
-  --color-brand-deep: oklch(0.28 0.08 18);
-  --color-brand-soft: oklch(0.29 0.05 18);
-  --color-on-brand: oklch(0.18 0.03 20);
-  --color-accent: oklch(0.83 0.13 80);
-  --color-accent-soft: oklch(0.27 0.045 75);
-  --color-ok-bg: oklch(0.27 0.05 155);
-  --color-ok-fg: oklch(0.9 0.08 155);
-  --color-ok-solid: oklch(0.65 0.13 155);
-  --color-warn-bg: oklch(0.28 0.05 80);
-  --color-warn-fg: oklch(0.92 0.08 85);
-  --color-warn-solid: oklch(0.72 0.13 80);
-  --color-danger-bg: oklch(0.27 0.07 25);
-  --color-danger-fg: oklch(0.92 0.06 25);
-  --color-danger-solid: oklch(0.7 0.17 25);
-  --color-info-bg: oklch(0.27 0.04 250);
-  --color-info-fg: oklch(0.9 0.05 250);
+:root {
+  color-scheme: light dark;
 }
 
 :root[data-theme='light'] {
   color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
 }
 
 @layer base {

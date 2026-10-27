@@ -29,6 +29,7 @@ export type PlannerAction =
   | { readonly type: 'ai-ideas'; readonly ideas: readonly AiIdea[] }
   | { readonly type: 'reset' };
 
+/** Where a visit starts: straight to the plan if one is saved, otherwise home. */
 export const initialState = (saved: SavedPlan | null): PlannerState => ({
   stage: saved === null ? 'start' : 'plan',
   draft: {},
@@ -100,6 +101,7 @@ const HANDLERS: { readonly [T in PlannerAction['type']]: Handler<T> } = {
   reset: () => initialState(null),
 };
 
+/** Applies one planner action; every transition is a small handler in HANDLERS. */
 export function plannerReducer(state: PlannerState, action: PlannerAction): PlannerState {
   // TypeScript cannot correlate the handler with its action through the index.
   const handler = HANDLERS[action.type] as Handler<PlannerAction['type']>;

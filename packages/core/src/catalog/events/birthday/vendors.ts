@@ -1,0 +1,96 @@
+import type { VendorSpec } from '../../../types/index.js';
+import { CHILDREN } from '../../common-conditions.js';
+
+/** Birthday: vendors to book, with lead times, typical shares and what to ask. */
+export const birthdayVendors: readonly VendorSpec[] = [
+  {
+    id: 'b-v-venue',
+    label: 'Party venue, café or banquet',
+    category: 'venue',
+    bookDaysBefore: 30,
+    categoryShare: 1,
+    depositShare: 0.25,
+    questions: [
+      'Is there a minimum spend or a per-head package?',
+      'Can we bring our own cake and décor?',
+      'How long is the booking, and what does overtime cost?',
+    ],
+    contractChecks: ['Package inclusions in writing', 'Cancellation terms'],
+  },
+  {
+    id: 'b-v-caterer',
+    label: 'Caterer or restaurant package',
+    category: 'catering',
+    bookDaysBefore: 14,
+    categoryShare: 1,
+    depositShare: 0.3,
+    questions: [
+      'Can every dish be labelled for allergens?',
+      'Do you offer a children’s or diabetic-friendly menu?',
+      'Is serving staff included?',
+    ],
+    contractChecks: ['Per-head rate and minimum count', 'Final headcount deadline'],
+  },
+  {
+    id: 'b-v-baker',
+    label: 'Baker',
+    category: 'cake',
+    bookDaysBefore: 10,
+    categoryShare: 1,
+    depositShare: 0.5,
+    questions: [
+      'Can you make it eggless, nut-free or vegan?',
+      'When must the design be confirmed?',
+      'Do you deliver and set up?',
+    ],
+    contractChecks: ['Design and flavour confirmed in writing', 'Delivery time slot'],
+  },
+  {
+    id: 'b-v-entertainer',
+    label: 'Entertainer (magician, host or DJ)',
+    category: 'entertainment',
+    bookDaysBefore: 21,
+    categoryShare: 0.7,
+    depositShare: 0.3,
+    questions: [
+      'Can you adapt the act for this age group?',
+      'What space and power do you need?',
+      'How long is the set?',
+    ],
+    contractChecks: ['Performance duration', 'Background check if working with children'],
+  },
+  {
+    id: 'b-v-play',
+    label: 'Bouncy castle or play-zone rental',
+    category: 'entertainment',
+    bookDaysBefore: 14,
+    categoryShare: 0.3,
+    depositShare: 0.3,
+    questions: [
+      'Is the equipment safety-certified and supervised?',
+      'What surface and space does it need?',
+    ],
+    contractChecks: ['Safety supervisor included', 'Damage liability'],
+    when: CHILDREN,
+  },
+  {
+    id: 'b-v-decor',
+    label: 'Decorator or balloon artist',
+    category: 'decor',
+    bookDaysBefore: 14,
+    categoryShare: 0.8,
+    depositShare: 0.4,
+    questions: ['Are materials latex-free or biodegradable?', 'How long does setup take?'],
+    contractChecks: ['Itemised décor list', 'Setup and removal times'],
+  },
+  {
+    id: 'b-v-photo',
+    label: 'Photographer',
+    category: 'photography',
+    bookDaysBefore: 14,
+    categoryShare: 1,
+    depositShare: 0.3,
+    questions: ['How many edited photos are included?', 'When will we receive them?'],
+    contractChecks: ['Hours covered', 'Delivery date'],
+  },
+];

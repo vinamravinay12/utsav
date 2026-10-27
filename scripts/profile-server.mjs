@@ -5,11 +5,7 @@
  * compression and headers — rather than Gemini.
  */
 import { performance } from 'node:perf_hooks';
-
-const PLANNED_ON = '2026-10-26';
-
-const percentile = (sorted, p) =>
-  sorted[Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length))];
+import { PLANNED_ON, percentile } from './lib/stats.mjs';
 
 const { createApp } = await import('../packages/server/dist/app.js');
 const { loadConfig } = await import('../packages/server/dist/config.js');

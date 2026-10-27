@@ -18,6 +18,7 @@ const PHASE_BOUNDS: readonly (readonly [PhaseId, number])[] = [
   ['bookings', 180],
 ];
 
+/** The timeline phase a task falls in, from how many days before the event it is due. */
 export const phaseOf = (daysBefore: number): PhaseId =>
   PHASE_BOUNDS.find(([, bound]) => daysBefore <= bound)?.[0] ?? 'foundations';
 

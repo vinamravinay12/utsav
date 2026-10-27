@@ -20,12 +20,14 @@ export const EVENT_TYPES: readonly (readonly [EventTypeId, string])[] = [
   ['community', 'Community event'],
 ];
 
+/** Where the event happens. */
 export const SETTINGS: readonly (readonly [Setting, string])[] = [
   ['indoor', 'Indoor'],
   ['outdoor', 'Outdoor'],
   ['mixed', 'Indoor and outdoor'],
 ];
 
+/** The overall feel of the event. */
 export const STYLES: readonly (readonly [StyleId, string])[] = [
   ['traditional', 'Traditional'],
   ['modern', 'Modern'],
@@ -35,6 +37,7 @@ export const STYLES: readonly (readonly [StyleId, string])[] = [
   ['eco', 'Eco-friendly'],
 ];
 
+/** Who the guests are, by age. */
 export const AGE_GROUPS: readonly (readonly [AgeGroup, string])[] = [
   ['kids', 'Children'],
   ['teens', 'Teenagers'],
@@ -43,6 +46,7 @@ export const AGE_GROUPS: readonly (readonly [AgeGroup, string])[] = [
   ['all-ages', 'All ages'],
 ];
 
+/** What the host or guests enjoy; used to personalise ideas. */
 export const INTERESTS: readonly (readonly [InterestId, string])[] = [
   ['music', 'Music'],
   ['dance', 'Dance'],
@@ -56,6 +60,7 @@ export const INTERESTS: readonly (readonly [InterestId, string])[] = [
   ['charity', 'Giving back'],
 ];
 
+/** Dietary needs the catering must meet. */
 export const DIETARY: readonly (readonly [DietaryId, string])[] = [
   ['vegetarian', 'Vegetarian'],
   ['vegan', 'Vegan'],
@@ -68,6 +73,7 @@ export const DIETARY: readonly (readonly [DietaryId, string])[] = [
 const idsOf = <T extends string>(entries: readonly (readonly [T, string])[]): readonly T[] =>
   entries.map(([id]) => id);
 
+/** The ids alone, for validation. */
 export const EVENT_TYPE_IDS = idsOf(EVENT_TYPES);
 export const SETTING_IDS = idsOf(SETTINGS);
 export const STYLE_IDS = idsOf(STYLES);

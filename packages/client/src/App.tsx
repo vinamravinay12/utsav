@@ -14,6 +14,7 @@ import { useTheme } from './state/use-theme.js';
 // The dashboard and the planning engine behind it load only once there is a plan.
 const PlanDashboard = lazy(() => import('./components/plan/PlanDashboard.js'));
 
+/** The whole app: describe the event, review the brief, then work through the plan. `today` is injectable for tests. */
 export function App({ today = todayIso() }: { readonly today?: string }): React.JSX.Element {
   const theme = useTheme();
   const [state, dispatch] = usePlanner();

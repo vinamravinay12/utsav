@@ -1,57 +1,39 @@
 import { BRIEF_LIMITS, EVENT_TYPES } from '@utsav/core';
 import { ChoiceGroup } from './ChoiceGroup.js';
 import { InputField } from './fields.js';
+import { bindInput, bindSingleChoice, type BriefSectionProps } from './form-bindings.js';
 import { FormSection } from './FormSection.js';
-import type { FormValues } from './form-values.js';
 
-export interface SectionProps {
-  readonly values: FormValues;
-  readonly errors: Readonly<Partial<Record<keyof FormValues, string>>>;
-  readonly today: string;
-  readonly set: <K extends keyof FormValues>(field: K, value: FormValues[K]) => void;
-}
-
-export function EventSection({ values, errors, today, set }: SectionProps): React.JSX.Element {
+/** Event type, name and date. Changing the type clears priorities, which are per-type categories. */
+export function EventSection(form: BriefSectionProps): React.JSX.Element {
+  const eventType = bindSingleChoice(form, 'eventType');
   return (
     <FormSection title="The event">
       <ChoiceGroup
         legend="Type of event"
-        name="eventType"
         options={EVENT_TYPES}
-        selected={values.eventType === '' ? [] : [values.eventType]}
-        error={errors.eventType}
-        onChange={([eventType = '']) => {
-          set('eventType', eventType);
+        {...eventType}
+        onChange={(selected) => {
+          eventType.onChange(selected);
           // Priorities are budget categories, which differ by event type.
-          set('priorities', []);
+          form.setField('priorities', []);
         }}
       />
       <div className="grid gap-4 sm:grid-cols-2">
         <InputField
           label="Event name (optional)"
           type="text"
-          value={values.name}
           maxLength={BRIEF_LIMITS.maxNameLength}
-          onChange={(value) => {
-            set('name', value);
-          }}
+          {...bindInput(form, 'name')}
         />
-        <InputField
-          label="Date"
-          type="date"
-          value={values.eventDate}
-          min={today}
-          error={errors.eventDate}
-          onChange={(value) => {
-            set('eventDate', value);
-          }}
-        />
+        <InputField label="Date" type="date" min={form.today} {...bindInput(form, 'eventDate')} />
       </div>
     </FormSection>
   );
 }
 
-export function SizeSection({ values, errors, set }: SectionProps): React.JSX.Element {
+/** Guest count and total budget. */
+export function SizeSection(form: BriefSectionProps): React.JSX.Element {
   return (
     <FormSection title="Guests and budget">
       <div className="grid gap-4 sm:grid-cols-2">
@@ -60,22 +42,14 @@ export function SizeSection({ values, errors, set }: SectionProps): React.JSX.El
           type="text"
           numeric
           hint={`Up to ${String(BRIEF_LIMITS.maxGuests)}.`}
-          value={values.guestCount}
-          error={errors.guestCount}
-          onChange={(value) => {
-            set('guestCount', value);
-          }}
+          {...bindInput(form, 'guestCount')}
         />
         <InputField
           label="Total budget (₹)"
           type="text"
           numeric
           hint="Whole rupees, e.g. 1800000 for 18 lakh."
-          value={values.totalBudget}
-          error={errors.totalBudget}
-          onChange={(value) => {
-            set('totalBudget', value);
-          }}
+          {...bindInput(form, 'totalBudget')}
         />
       </div>
     </FormSection>

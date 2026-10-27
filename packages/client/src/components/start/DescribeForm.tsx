@@ -2,7 +2,9 @@ import { eventTemplates } from '@utsav/core';
 import { useId, useState } from 'react';
 import { Alert } from '../ui/Alert.js';
 
+/** Shortest description worth sending; matches the server’s limit. */
 export const DESCRIPTION_MIN = 15;
+/** Longest description accepted; matches the server’s limit. */
 export const DESCRIPTION_MAX = 2000;
 
 interface DescribeFormProps {

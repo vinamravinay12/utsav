@@ -5,9 +5,9 @@
  *  - payload sizes the browser holds and the calendar export
  */
 import { performance } from 'node:perf_hooks';
+import { PLANNED_ON, percentile } from './lib/stats.mjs';
 import { buildPlan, summarizeSpending, toICalendar } from '../packages/core/dist/index.js';
 
-const PLANNED_ON = '2026-10-26';
 const BRIEFS = {
   wedding: {
     eventType: 'wedding',
@@ -52,9 +52,6 @@ const BRIEFS = {
     dietary: [],
   },
 };
-
-const percentile = (sorted, p) =>
-  sorted[Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length))];
 
 function time(fn, iterations) {
   for (let i = 0; i < 200; i += 1) fn(); // warm the JIT

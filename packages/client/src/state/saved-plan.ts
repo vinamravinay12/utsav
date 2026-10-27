@@ -1,8 +1,15 @@
-import { VENDOR_STATUSES, completeBrief, type EventBrief, type VendorStatus } from '@utsav/core';
+import {
+  VENDOR_STATUSES,
+  completeBrief,
+  isMember,
+  type EventBrief,
+  type VendorStatus,
+} from '@utsav/core';
 import type { AiIdea } from '../api/types.js';
 
 /** Bumped whenever the stored shape changes; older versions are discarded, not guessed at. */
 export const STORAGE_VERSION = 1;
+/** The localStorage key the plan is kept under. */
 export const STORAGE_KEY = 'utsav-plan';
 
 export interface SavedPlan {
@@ -22,16 +29,17 @@ const isRecord = (value: unknown): value is Raw =>
 
 const MAX_SPEND = 10_000_000_000;
 
-function entriesOf<T>(value: unknown, keep: (entry: unknown) => entry is T): Record<string, T> {
+/** The entries of an untrusted record whose values pass the check; anything else is dropped. */
+function validEntries<T>(value: unknown, keep: (entry: unknown) => entry is T): Record<string, T> {
   return isRecord(value)
     ? Object.fromEntries(Object.entries(value).filter((pair): pair is [string, T] => keep(pair[1])))
     : {};
 }
 
-const isStatus = (value: unknown): value is VendorStatus =>
-  VENDOR_STATUSES.includes(value as VendorStatus);
+const isVendorStatus = (value: unknown): value is VendorStatus => isMember(VENDOR_STATUSES, value);
 
-const isSpend = (value: unknown): value is number =>
+/** A spend amount: whole rupees, never negative, within a sane ceiling. */
+const isSpendAmount = (value: unknown): value is number =>
   typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= MAX_SPEND;
 
 function isAiIdea(value: unknown): value is AiIdea {
@@ -70,8 +78,8 @@ export function parseSavedPlan(value: unknown): SavedPlan | null {
     done: Array.isArray(value.done)
       ? value.done.filter((id): id is string => typeof id === 'string')
       : [],
-    vendorStatus: entriesOf(value.vendorStatus, isStatus),
-    spent: entriesOf(value.spent, isSpend),
+    vendorStatus: validEntries(value.vendorStatus, isVendorStatus),
+    spent: validEntries(value.spent, isSpendAmount),
     aiIdeas: Array.isArray(value.aiIdeas) ? value.aiIdeas.filter(isAiIdea) : [],
   };
 }
@@ -86,6 +94,7 @@ export function loadSavedPlan(storage: Pick<Storage, 'getItem'> = localStorage):
   }
 }
 
+/** Writes the plan, or removes it when null; storage failures are ignored. */
 export function storeSavedPlan(
   plan: SavedPlan | null,
   storage: Pick<Storage, 'setItem' | 'removeItem'> = localStorage,

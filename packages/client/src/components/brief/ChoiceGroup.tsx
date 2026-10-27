@@ -11,7 +11,7 @@ interface ChoiceGroupProps {
   readonly multiple?: boolean;
   /** Further boxes are disabled once this many are ticked. */
   readonly max?: number;
-  readonly onChange: (selected: string[]) => void;
+  readonly onChange: (selected: readonly string[]) => void;
 }
 
 /**
@@ -22,7 +22,7 @@ export function ChoiceGroup(props: ChoiceGroupProps): React.JSX.Element {
   const { legend, hint, error, name, options, selected, multiple = false, max, onChange } = props;
   const errorId = useId();
   const full = max !== undefined && selected.length >= max;
-  const toggle = (value: string): string[] => {
+  const nextSelection = (value: string): string[] => {
     if (!multiple) {
       return [value];
     }
@@ -52,7 +52,7 @@ export function ChoiceGroup(props: ChoiceGroupProps): React.JSX.Element {
                 disabled={!checked && multiple && full}
                 className="sr-only"
                 onChange={() => {
-                  onChange(toggle(value));
+                  onChange(nextSelection(value));
                 }}
               />
               {label}

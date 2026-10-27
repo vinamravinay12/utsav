@@ -8,6 +8,7 @@ import type {
   PlanningContext,
 } from '../types/index.js';
 
+/** How the time left compares with the template’s lead window. */
 export function leadStatusOf(daysUntilEvent: number, template: EventTemplate): LeadStatus {
   if (daysUntilEvent < template.minLeadDays) {
     return 'rushed';
@@ -15,6 +16,7 @@ export function leadStatusOf(daysUntilEvent: number, template: EventTemplate): L
   return daysUntilEvent < template.idealLeadDays / 2 ? 'tight' : 'comfortable';
 }
 
+/** Which cost tier the budget per guest affords. */
 export function budgetTierOf(perGuest: number, template: EventTemplate): BudgetTier {
   if (perGuest >= template.tiers.premium) {
     return 'premium';
@@ -22,6 +24,7 @@ export function budgetTierOf(perGuest: number, template: EventTemplate): BudgetT
   return perGuest >= template.tiers.moderate ? 'moderate' : 'lean';
 }
 
+/** Whole rupees per guest. */
 export const perGuestOf = (brief: EventBrief): number =>
   Math.floor(brief.totalBudget / Math.max(1, brief.guestCount));
 

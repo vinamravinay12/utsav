@@ -16,6 +16,7 @@ export interface AiIdea {
   readonly shareOfCategory: number;
 }
 
+/** A request failure whose message is safe and meant to be shown to the host. */
 export class ApiError extends Error {
   constructor(message: string) {
     super(message);

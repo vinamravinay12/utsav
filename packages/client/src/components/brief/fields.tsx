@@ -56,6 +56,7 @@ interface InputFieldProps {
   readonly maxLength?: number;
 }
 
+/** A labelled text or date input with its hint and error wired up. */
 export function InputField({
   label,
   hint,
@@ -95,6 +96,7 @@ interface SelectFieldProps {
   readonly onChange: (value: string) => void;
 }
 
+/** A labelled native select with a “Choose…” placeholder. */
 export function SelectField({
   label,
   error,

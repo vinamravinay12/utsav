@@ -4,6 +4,7 @@ import type { BudgetCategorySpec, BudgetLine } from '../types/index.js';
 /** How much more weight a prioritised category gets before renormalising. */
 export const PRIORITY_BOOST = 1.3;
 
+/** A whole budget expressed in basis points (1 bp = 0.01%). */
 export const BASIS_POINTS = 10_000;
 
 /**

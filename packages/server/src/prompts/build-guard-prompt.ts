@@ -16,8 +16,10 @@ export const GUARD_INSTRUCTION = [
   'Give a reason of at most 15 words.',
 ].join('\n');
 
+/** JSON Schema the judge’s verdict is decoded against. */
 export const GUARD_RESPONSE_SCHEMA = toResponseSchema(guardVerdictSchema);
 
+/** The judge call for one piece of host text. */
 export function buildGuardRequest(text: string): LlmRequest {
   return {
     purpose: 'guard',

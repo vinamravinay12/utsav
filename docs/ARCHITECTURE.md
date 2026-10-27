@@ -67,9 +67,10 @@ tasks, a readiness score (60% tasks, 40% vendors) and reallocation moves.
 
 ### Planning knowledge is data
 
-`catalog/events/*.ts` hold the templates: budget categories, tasks, vendors and ideas, written
-as plain objects with declarative conditions such as `OPEN_AIR` or `guestsAtLeast(150)`. Adding
-an event type is a new data file plus one line in `registry.ts`; no engine code changes.
+`catalog/events/<type>/` holds each template, one list per file — `budget.ts`, `tasks.ts`,
+`vendors.ts`, `ideas.ts` — assembled in `index.ts`. Entries are plain objects with declarative
+conditions such as `OPEN_AIR` or `guestsAtLeast(150)`. Adding an event type is a new folder plus
+one line in `registry.ts`; no engine code changes.
 `registry.test.ts` holds the invariants every template must satisfy.
 
 ## Request lifecycle: extraction

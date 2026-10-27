@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { allocateByWeight, formatInr } from './allocate.js';
+import { allocateByWeight } from './allocate.js';
 
 const amounts = (total: number, weights: readonly number[]): number[] =>
   allocateByWeight(total, weights, (weight) => weight).map(({ amount }) => amount);
@@ -44,12 +44,5 @@ describe('allocateByWeight', () => {
       expect(parts.reduce((sum, part) => sum + part, 0)).toBe(total);
       expect(parts.every((part) => part >= 0 && Number.isInteger(part))).toBe(true);
     }
-  });
-});
-
-describe('formatInr', () => {
-  it('uses Indian digit grouping without paise', () => {
-    expect(formatInr(1_800_000)).toBe('₹18,00,000');
-    expect(formatInr(999)).toBe('₹999');
   });
 });

@@ -6,6 +6,7 @@ import { generateIdeas, type IdeasDependencies } from '../ideas/generate-ideas.j
 import { ideasRequestSchema } from '../validation/schemas.js';
 import { respondToLlmError } from './llm-errors.js';
 
+/** POST /api/ideas — Gemini ideas checked against the server-built plan. */
 export function ideasRouter(dependencies: IdeasDependencies, now: () => Date): Router {
   const router = Router();
   router.post('/ideas', async (request, response) => {

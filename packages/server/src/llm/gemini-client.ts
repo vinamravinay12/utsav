@@ -9,11 +9,13 @@ import {
 } from './llm-client.js';
 import { isQuotaExceeded, withRetry, type RetryOptions } from './retry.js';
 
+/** Waits; the default delay between retries. */
 export const sleep = (ms: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
 
+/** Two attempts, 500 ms apart, for transient upstream errors. */
 export const DEFAULT_RETRY: RetryOptions = { attempts: 2, baseDelayMs: 500, delay: sleep };
 
 /**
@@ -58,7 +60,7 @@ export function createGeminiClient(
   models: readonly string[],
   retry: RetryOptions = DEFAULT_RETRY,
 ): LlmClient {
-  const call = (model: string, request: LlmRequest): Promise<string> =>
+  const callModel = (model: string, request: LlmRequest): Promise<string> =>
     withRetry(async () => {
       const response = await generateContent({
         model,
@@ -82,7 +84,7 @@ export function createGeminiClient(
       for (const model of models) {
         const started = Date.now();
         try {
-          const text = await call(model, request);
+          const text = await callModel(model, request);
           logEvent('INFO', 'gemini call', {
             model,
             purpose: request.purpose,

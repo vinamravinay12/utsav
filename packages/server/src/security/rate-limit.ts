@@ -17,7 +17,8 @@ export const AI_RATE_LIMIT: RateLimitOptions = {
   now: () => Date.now(),
 };
 
-interface Window {
+/** One client's request count in the current fixed window. */
+interface ClientWindow {
   count: number;
   readonly resetAt: number;
 }
@@ -32,7 +33,7 @@ interface Window {
  */
 export const clientKey = (request: Pick<Request, 'ip'>): string => request.ip ?? 'unknown';
 
-function evict(windows: Map<string, Window>, now: number, maxClients: number): void {
+function evict(windows: Map<string, ClientWindow>, now: number, maxClients: number): void {
   for (const [key, window] of windows) {
     if (window.resetAt <= now) {
       windows.delete(key);
@@ -52,7 +53,7 @@ function evict(windows: Map<string, Window>, now: number, maxClients: number): v
  * upstream model quota, not to be a precise global counter.
  */
 export function rateLimit(options: RateLimitOptions = AI_RATE_LIMIT) {
-  const windows = new Map<string, Window>();
+  const windows = new Map<string, ClientWindow>();
   return (request: Request, response: Response, next: NextFunction): void => {
     const key = clientKey(request);
     const now = options.now();

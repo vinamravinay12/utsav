@@ -1,3 +1,4 @@
+/** Plain statement of where data goes and where the numbers come from. */
 export function Footer(): React.JSX.Element {
   return (
     <footer className="no-print mt-12 border-t border-line">

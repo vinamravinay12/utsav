@@ -53,6 +53,7 @@ export interface Theme {
   readonly setPreference: (preference: ThemePreference) => void;
 }
 
+/** The host’s theme preference, applied to the document and remembered. */
 export function useTheme(): Theme {
   const [preference, setPreferenceState] = useState<ThemePreference>(() =>
     readStoredPreference(globalThis.localStorage),

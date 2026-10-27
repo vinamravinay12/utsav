@@ -30,10 +30,12 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
   return (await response.json()) as T;
 }
 
+/** Asks the server to read a free-text description into a draft brief. */
 export function extractBrief(description: string, today: string): Promise<ExtractResponse> {
   return postJson<ExtractResponse>('/api/extract', { description, today });
 }
 
+/** Asks the server for Gemini ideas, already checked against this brief’s budget. */
 export async function fetchAiIdeas(brief: EventBrief, today: string): Promise<readonly AiIdea[]> {
   const { ideas } = await postJson<{ ideas: readonly AiIdea[] }>('/api/ideas', { brief, today });
   return ideas;

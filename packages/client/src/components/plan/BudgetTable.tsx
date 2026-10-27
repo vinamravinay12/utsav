@@ -54,6 +54,7 @@ interface TableProps {
   readonly onSpent: RowProps['onSpent'];
 }
 
+/** Planned against spent for every category, with a spend input per row and totals. */
 export function BudgetTable({ summary, onSpent }: TableProps): React.JSX.Element {
   return (
     <div className="card overflow-x-auto p-0">

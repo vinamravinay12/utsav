@@ -18,26 +18,29 @@ export interface FormValues {
 
 type Draft = Readonly<Record<string, unknown>>;
 
-const text = (value: unknown): string =>
+/** Form inputs hold strings; numbers are shown as typed digits, anything else as empty. */
+const asInputText = (value: unknown): string =>
   typeof value === 'string' || typeof value === 'number' ? String(value) : '';
 
-const list = (value: unknown): string[] =>
+/** Keeps only the string entries of an untrusted list. */
+const asStringList = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === 'string') : [];
 
+/** Turns a draft (from the AI or a saved brief) into the strings and lists the inputs hold. */
 export function toFormValues(draft: Draft): FormValues {
   return {
-    eventType: text(draft.eventType),
-    name: text(draft.name),
-    eventDate: text(draft.eventDate),
-    guestCount: text(draft.guestCount),
-    totalBudget: text(draft.totalBudget),
-    city: text(draft.city),
-    setting: text(draft.setting),
-    style: text(draft.style),
-    ageGroup: text(draft.ageGroup),
-    priorities: list(draft.priorities),
-    interests: list(draft.interests),
-    dietary: list(draft.dietary),
+    eventType: asInputText(draft.eventType),
+    name: asInputText(draft.name),
+    eventDate: asInputText(draft.eventDate),
+    guestCount: asInputText(draft.guestCount),
+    totalBudget: asInputText(draft.totalBudget),
+    city: asInputText(draft.city),
+    setting: asInputText(draft.setting),
+    style: asInputText(draft.style),
+    ageGroup: asInputText(draft.ageGroup),
+    priorities: asStringList(draft.priorities),
+    interests: asStringList(draft.interests),
+    dietary: asStringList(draft.dietary),
   };
 }
 

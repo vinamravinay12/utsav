@@ -2,7 +2,8 @@ import { completeBrief, type BriefIssue, type EventBrief } from '@utsav/core';
 import { useState } from 'react';
 import { Alert } from '../ui/Alert.js';
 import { PlaceSection, PreferenceSection } from './BriefPreferences.js';
-import { EventSection, SizeSection, type SectionProps } from './BriefSections.js';
+import { EventSection, SizeSection } from './BriefSections.js';
+import type { BriefSectionProps } from './form-bindings.js';
 import { toDraft, toFormValues, type FormValues } from './form-values.js';
 
 interface BriefFormProps {
@@ -36,7 +37,8 @@ function FormIntro({
   );
 }
 
-const errorsFrom = (issues: readonly BriefIssue[]): SectionProps['errors'] =>
+/** One message per field, keyed so each input can show its own error. */
+const errorsByField = (issues: readonly BriefIssue[]): BriefSectionProps['errors'] =>
   Object.fromEntries(issues.map((issue) => [issue.field, issue.message]));
 
 /**
@@ -54,10 +56,15 @@ export function BriefForm({
 }: BriefFormProps): React.JSX.Element {
   const [values, setValues] = useState<FormValues>(() => toFormValues(initial));
   const [issues, setIssues] = useState<readonly BriefIssue[]>([]);
-  const set: SectionProps['set'] = (field, value) => {
+  const setField: BriefSectionProps['setField'] = (field, value) => {
     setValues((current) => ({ ...current, [field]: value }));
   };
-  const props: SectionProps = { values, errors: errorsFrom(issues), today, set };
+  const sectionProps: BriefSectionProps = {
+    values,
+    errors: errorsByField(issues),
+    today,
+    setField,
+  };
   return (
     <form
       noValidate
@@ -74,10 +81,10 @@ export function BriefForm({
       }}
     >
       <FormIntro editing={editing} missing={missing} />
-      <EventSection {...props} />
-      <SizeSection {...props} />
-      <PlaceSection {...props} />
-      <PreferenceSection {...props} />
+      <EventSection {...sectionProps} />
+      <SizeSection {...sectionProps} />
+      <PlaceSection {...sectionProps} />
+      <PreferenceSection {...sectionProps} />
       {issues.length > 0 && (
         <Alert>
           Please fix {issues.length === 1 ? 'one field' : `${String(issues.length)} fields`} above:{' '}

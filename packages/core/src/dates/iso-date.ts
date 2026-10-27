@@ -12,7 +12,9 @@ function toEpochDay(date: string): number | undefined {
   if (match === null) {
     return undefined;
   }
-  const [, year, month, day] = match.map(Number) as [number, number, number, number];
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
   const epoch = Date.UTC(year, month - 1, day);
   // Date.UTC rolls 2026-02-30 over to March; a round trip catches it.
   const roundTrip = new Date(epoch);
@@ -21,6 +23,7 @@ function toEpochDay(date: string): number | undefined {
     : undefined;
 }
 
+/** Whether the string is a real calendar date in YYYY-MM-DD form. */
 export function isIsoDate(value: string): boolean {
   return toEpochDay(value) !== undefined;
 }
@@ -36,6 +39,7 @@ function requireEpochDay(date: string): number {
 const fromEpochDay = (epochDay: number): string =>
   new Date(epochDay * MS_PER_DAY).toISOString().slice(0, 10);
 
+/** The date a number of days later (or earlier, if negative). */
 export function addDays(date: string, days: number): string {
   return fromEpochDay(requireEpochDay(date) + days);
 }
@@ -56,4 +60,5 @@ export function weekdayOf(date: string): number {
   return new Date(requireEpochDay(date) * MS_PER_DAY).getUTCDay();
 }
 
+/** The later of two ISO dates (they sort as strings). */
 export const laterOf = (a: string, b: string): string => (a >= b ? a : b);

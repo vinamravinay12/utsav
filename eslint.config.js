@@ -52,14 +52,14 @@ export default defineConfig([
     },
   },
   {
-    // The event catalogue is declarative planning knowledge, not logic. It is
-    // reviewed as content and may be longer than a code module.
+    // Event catalogue files are declarative data — one list per file (budget,
+    // tasks, vendors, ideas) — so they get a larger, but still enforced, ceiling.
     files: ['packages/core/src/catalog/events/**/*.ts'],
-    rules: { 'max-lines': 'off', 'max-lines-per-function': 'off' },
+    rules: { 'max-lines': ['error', { max: 250, skipBlankLines: true, skipComments: true }] },
   },
   {
     // Plain-JavaScript tooling scripts: no types to check, Node globals, console output is the point.
-    files: ['scripts/*.mjs'],
+    files: ['scripts/**/*.mjs'],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: {
       globals: { Buffer: 'readonly', console: 'readonly', fetch: 'readonly', process: 'readonly' },

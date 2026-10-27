@@ -16,6 +16,7 @@ const STEPS: readonly (readonly [string, string])[] = [
   ],
 ];
 
+/** The home page: what Utsav does, the description box and the no-AI route. */
 export function StartScreen({
   busy,
   error,

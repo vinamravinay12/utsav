@@ -25,7 +25,9 @@ export { derivePlanningContext } from './context/derive-context.js';
 export { addDays, daysBetween, isIsoDate } from './dates/iso-date.js';
 export { toICalendar } from './export/to-icalendar.js';
 export { rankIdeas } from './ideas/rank-ideas.js';
-export { allocateByWeight, formatInr } from './money/allocate.js';
+export { allocateByWeight } from './money/allocate.js';
+export { formatInr } from './money/format-inr.js';
+export { AI_IDEA_MAX_CATEGORY_SHARE, formatShare } from './ideas/ai-idea-policy.js';
 export { buildPlan } from './plan/build-plan.js';
 export {
   summarizeProgress,

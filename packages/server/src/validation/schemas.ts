@@ -9,8 +9,10 @@ import {
 } from '@utsav/core';
 import { z } from 'zod';
 
+/** YYYY-MM-DD; calendar validity is checked by the engine. */
 export const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
+/** Accepted description length, in characters. */
 export const DESCRIPTION_LIMITS = { min: 15, max: 2000 } as const;
 
 // ---- Requests from the browser -------------------------------------------------
@@ -45,15 +47,14 @@ export const extractionSchema = z.object({
   dietary: z.array(z.enum(DIETARY_IDS)),
 });
 
+/** The injection judge’s answer. */
 export const guardVerdictSchema = z.object({
   verdict: z.enum(['safe', 'manipulation']),
   reason: z.string().max(200),
 });
 
+/** How many AI ideas, and how long their text may be. */
 export const IDEA_LIMITS = { count: 4, title: 70, description: 240 } as const;
-
-/** An idea is an addition to a category, not the whole of it: the rest must stay funded. */
-export const MAX_SHARE_OF_CATEGORY = 0.6;
 
 const ideaFields = {
   title: z.string().min(3).max(IDEA_LIMITS.title),
@@ -77,6 +78,7 @@ export function aiIdeasSchema(categoryIds: readonly [string, ...string[]]) {
  */
 export const ideasEnvelopeSchema = z.object({ ideas: z.array(z.unknown()).max(IDEA_LIMITS.count) });
 
+/** One idea as parsed; its category is checked against the plan afterwards. */
 export const ideaCandidateSchema = z.object({ ...ideaFields, categoryId: z.string() });
 
 /** Zod to JSON Schema, minus the `$schema` marker the Gemini API does not accept. */

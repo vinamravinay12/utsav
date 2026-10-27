@@ -4,7 +4,7 @@ Every rule below is enforced by configuration and fails the build; none is a gui
 
 | Gate          | Where                                         | Setting                                                                                                                    |
 | :------------ | :-------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------- |
-| File size     | [`eslint.config.js`](../eslint.config.js)     | `max-lines` 150 (catalogue data files exempt)                                                                              |
+| File size     | [`eslint.config.js`](../eslint.config.js)     | `max-lines` 150 for code; 250 for catalogue data files, which hold one list each                                           |
 | Function size | `eslint.config.js`                            | `max-lines-per-function` 60                                                                                                |
 | Complexity    | `eslint.config.js`                            | `complexity` 10, `max-depth` 3, `max-params` 4                                                                             |
 | Type safety   | [`tsconfig.base.json`](../tsconfig.base.json) | `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noUnusedLocals/Parameters`, `verbatimModuleSyntax`    |
@@ -16,6 +16,16 @@ Every rule below is enforced by configuration and fails the build; none is a gui
 ## Conventions
 
 - **Pure core.** `@utsav/core` imports nothing with side effects; the date is always a parameter.
+- **Catalogue layout.** Each event type is a folder — `catalog/events/wedding/` holds `budget.ts`,
+  `tasks.ts`, `vendors.ts`, `ideas.ts` and an `index.ts` that assembles the template — so no data
+  file exceeds about 220 lines and each is reviewed as one list.
+- **Single sources of truth.** Limits and policies shared by the engine, server and UI live in one
+  place: `BRIEF_LIMITS`, the vocabularies, and `AI_IDEA_MAX_CATEGORY_SHARE` (used by the server's
+  validator, the prompt and the sentence that explains the rule on the page). The colour palette is
+  defined once with `light-dark()`.
+- **Names say what things are for:** `bindInput`, `bindSingleChoice`, `vocabularyValue`,
+  `completedShare`, `isWorkable`, `scoreMatch`, `ClientWindow` — no one-letter or generic helpers.
+- **Every exported function, component and constant has a doc comment.**
 - **Knowledge as data.** Event templates, vocabularies, seasons and insight rules are declarative;
   logic lives in one tested function per concern (`evaluateCondition`, `allocateByWeight`, …).
 - **One concern per module**, named for what it does (`summarize-spending.ts`, `screen-input.ts`).

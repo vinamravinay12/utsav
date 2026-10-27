@@ -22,6 +22,7 @@ export const DEFAULT_MODELS: readonly string[] = [
   'gemini-flash-lite-latest',
 ];
 
+/** Port used when PORT is unset or invalid (Cloud Run sets it). */
 export const DEFAULT_PORT = 8080;
 
 type Env = Readonly<Record<string, string | undefined>>;

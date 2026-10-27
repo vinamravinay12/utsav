@@ -66,6 +66,7 @@ function errorHandler(
   response.status(known?.status ?? 500).json({ error: known?.message ?? 'Something went wrong.' });
 }
 
+/** Builds the Express app. Every dependency is passed in, so tests run it with a fake model. */
 export function createApp({
   llm,
   config,
