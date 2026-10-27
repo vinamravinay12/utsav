@@ -61,19 +61,19 @@ Utsav gives the host a **plan they can act on and trust**:
 
 ## ✅ What's covered
 
-| Capability               | What the host gets                                                                                                                                                                     |
-| :----------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Event types**          | Weddings (23 tasks, 9 vendors, 17 ideas), birthdays (18 / 7 / 16), community events (20 / 8 / 15)                                                                                      |
-| **Budget**               | 9–10 categories per event, shares in basis points that always sum to the total exactly; up to 3 priorities get 30% more weight; contingency reserve never squeezed                     |
-| **Feasibility**          | Per-guest floors (e.g. ₹800/plate for wedding catering) with two exact remedies: guests the money covers, or the budget that covers everyone                                           |
-| **Spend tracking**       | Actual vs planned per category, near-limit and over-budget states, and concrete "move ₹X from A to B" suggestions (reserve first, priorities last)                                     |
-| **Timeline**             | Every task dated against the event; six phases; tasks pulled forward without reordering when time is short; essential and at-risk flags; overdue when the host returns later           |
-| **Vendors**              | Book-by date, budgeted fee, typical advance, 2–4 questions to ask and 2–3 things to get in the contract, per vendor; status tracking                                                   |
-| **Ideas**                | Catalogue ideas filtered by setting, audience and affordability, ranked by style and interests, capped per category, each with reasons; plus Gemini ideas validated against the budget |
-| **Context rules**        | Indian seasons (monsoon rain plans, summer heat), peak wedding months, festival demand, crowd safety, children's supervision, elders' access, dietary labelling, low-waste             |
-| **Conditional planning** | Tasks and vendors appear only when they apply — tenting for open-air, permits for large or outdoor community events, supervision for children's parties                                |
-| **Artifacts**            | Calendar export (.ics, RFC 5545) of pending tasks; printable plan (all sections)                                                                                                       |
-| **Persistence**          | The plan and all progress survive refresh and return visits (versioned, validated local storage); editing the brief keeps progress                                                     |
+| Capability               | What the host gets                                                                                                                                                                                                              |
+| :----------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Event types**          | Weddings (23 tasks, 9 vendors, 17 ideas), birthdays (18 / 7 / 16), community events (20 / 8 / 15)                                                                                                                               |
+| **Budget**               | 9–10 categories per event, shares in basis points that always sum to the total exactly; up to 3 priorities get 30% more weight; contingency reserve never squeezed                                                              |
+| **Feasibility**          | Per-guest floors (e.g. ₹800/plate for wedding catering) with two exact remedies: guests the money covers, or the budget that covers everyone                                                                                    |
+| **Spend tracking**       | Actual vs planned per category, near-limit and over-budget states, and concrete "move ₹X from A to B" suggestions (reserve first, priorities last)                                                                              |
+| **Timeline**             | Every task dated against the event; six phases; tasks pulled forward without reordering when time is short; essential and at-risk flags; overdue when the host returns later                                                    |
+| **Vendors**              | Book-by date, budgeted fee, typical advance, 2–4 questions to ask and 2–3 things to get in the contract, per vendor; status tracking                                                                                            |
+| **Ideas**                | Catalogue ideas filtered by setting, audience and affordability, ranked by style and interests, capped per category, each with reasons; plus Gemini ideas validated against the budget                                          |
+| **Context rules**        | Indian seasons (monsoon rain plans, summer heat), peak wedding months, festival demand, crowd safety, children's supervision, elders' access, dietary labelling, low-waste                                                      |
+| **Conditional planning** | Tasks and vendors appear only when they apply — tenting for open-air, permits for large or outdoor community events, supervision for children's parties                                                                         |
+| **Artifacts**            | Calendar export (.ics, RFC 5545) of pending tasks; printable plan (all sections)                                                                                                                                                |
+| **Persistence**          | The plan and all progress survive refresh and return visits (versioned, validated local storage); editing the brief keeps progress. **Start afresh** (header button or the Utsav logo) clears everything after one confirmation |
 
 ---
 
@@ -131,7 +131,7 @@ npm run dev:client    # app on :5173, proxies /api to the server
 ```
 
 ```bash
-npm run verify        # format, lint, typecheck, 289 tests at 100% coverage, build
+npm run verify        # format, lint, typecheck, 297 tests at 100% coverage, build
 npm run profile       # engine and server latency, memory and payload measurements
 ```
 
@@ -182,7 +182,7 @@ Full details in [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md). Highlights:
 - **Lighthouse Accessibility 100** (mobile and desktop); **zero axe violations** asserted in tests at
   every stage of the journey and on every dashboard tab.
 - Native controls throughout (radios, checkboxes, selects, `<progress>`, `<details>`); WAI-ARIA tabs
-  with arrow/Home/End keys; skip link; focus moves to the new content on each stage change.
+  with arrow/Home/End keys; skip link; focus moves to the new content on each stage change and on starting afresh.
 - Every error is linked to its field with `aria-describedby` and `aria-invalid`; alerts use `role="alert"`.
 - Light, dark and system themes from CSS tokens chosen for WCAG AA contrast; reduced-motion respected.
 
@@ -202,7 +202,7 @@ Full details in [docs/EFFICIENCY.md](docs/EFFICIENCY.md). Highlights (measured w
 
 Full details in [docs/TESTING.md](docs/TESTING.md). Highlights:
 
-- **289 tests**, **100% statements, branches, functions and lines**, enforced in
+- **297 tests**, **100% statements, branches, functions and lines**, enforced in
   [`vitest.config.ts`](vitest.config.ts) with `all: true`.
 - Invariant tests over the catalogue (shares sum to 10 000 bp, vendor shares ≤ 100% per category,
   every condition field exists, every idea uses the shared vocabulary).

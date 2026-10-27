@@ -7,7 +7,6 @@ interface PlanHeaderProps {
   readonly daysLeft: number;
   readonly onEdit: () => void;
   readonly onExportCalendar: () => void;
-  readonly onReset: () => void;
 }
 
 function Readiness({ progress }: { readonly progress: ProgressSummary }): React.JSX.Element {
@@ -31,8 +30,7 @@ function Readiness({ progress }: { readonly progress: ProgressSummary }): React.
 function Actions({
   onEdit,
   onExportCalendar,
-  onReset,
-}: Pick<PlanHeaderProps, 'onEdit' | 'onExportCalendar' | 'onReset'>) {
+}: Pick<PlanHeaderProps, 'onEdit' | 'onExportCalendar'>) {
   return (
     <div className="no-print flex flex-wrap gap-2">
       <button type="button" className="btn-secondary" onClick={onEdit}>
@@ -49,9 +47,6 @@ function Actions({
         }}
       >
         Print or save as PDF
-      </button>
-      <button type="button" className="btn-secondary" onClick={onReset}>
-        Start a new plan
       </button>
     </div>
   );

@@ -143,7 +143,7 @@ describe('App', () => {
     });
   });
 
-  it('edits the brief and keeps progress, and starts over only when confirmed', async () => {
+  it('edits the brief and keeps progress, and starts afresh only when confirmed', async () => {
     storePlan(savedPlan({ done: ['w-budget'] }));
     const user = userEvent.setup();
     render(<App today={TODAY} />);
@@ -160,9 +160,9 @@ describe('App', () => {
       .spyOn(window, 'confirm')
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(true);
-    await user.click(screen.getByRole('button', { name: 'Start a new plan' }));
+    await user.click(screen.getByRole('button', { name: 'Start afresh' }));
     expect(screen.getByRole('heading', { name: brief.name })).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Start a new plan' }));
+    await user.click(screen.getByRole('button', { name: 'Start afresh' }));
     expect(confirm).toHaveBeenCalledTimes(2);
     expect(await screen.findByRole('button', { name: 'Plan my event' })).toBeInTheDocument();
     await waitFor(() => {

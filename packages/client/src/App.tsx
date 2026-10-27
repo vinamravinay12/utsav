@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef } from 'react';
+import { Suspense, lazy } from 'react';
 import { BriefForm } from './components/brief/BriefForm.js';
 import { StartScreen } from './components/start/StartScreen.js';
 import { Footer } from './components/ui/Footer.js';
@@ -6,7 +6,9 @@ import { Header } from './components/ui/Header.js';
 import { SkipLink } from './components/ui/SkipLink.js';
 import { todayIso } from './lib/dates.js';
 import { useExtract } from './state/use-extract.js';
+import { usePageFocus } from './state/use-page-focus.js';
 import { usePlanner } from './state/use-planner.js';
+import { useStartAfresh } from './state/use-start-afresh.js';
 import { useTheme } from './state/use-theme.js';
 
 // The dashboard and the planning engine behind it load only once there is a plan.
@@ -16,21 +18,20 @@ export function App({ today = todayIso() }: { readonly today?: string }): React.
   const theme = useTheme();
   const [state, dispatch] = usePlanner();
   const extraction = useExtract(today, dispatch);
-  const main = useRef<HTMLElement>(null);
-  const firstStage = useRef(state.stage);
-  // Moving between stages replaces the whole page, so focus and scroll move with
-  // it. The first render is left alone: focus starts at the top of the document.
-  useEffect(() => {
-    if (state.stage !== firstStage.current) {
-      firstStage.current = state.stage;
-      main.current?.focus({ preventScroll: true });
-      window.scrollTo({ top: 0 });
-    }
-  }, [state.stage]);
+  const { session, startAfresh } = useStartAfresh({
+    hasPlan: state.saved !== null,
+    dispatch,
+    clearExtraction: extraction.clear,
+  });
+  const main = usePageFocus(`${state.stage}-${String(session)}`);
   return (
     <>
       <SkipLink />
-      <Header theme={theme.preference} onThemeChange={theme.setPreference} />
+      <Header
+        theme={theme.preference}
+        onThemeChange={theme.setPreference}
+        onStartAfresh={startAfresh}
+      />
       <main
         id="main"
         ref={main}
@@ -39,6 +40,7 @@ export function App({ today = todayIso() }: { readonly today?: string }): React.
       >
         {state.stage === 'start' && (
           <StartScreen
+            key={session}
             busy={extraction.busy}
             error={extraction.error}
             onDescribe={extraction.describe}

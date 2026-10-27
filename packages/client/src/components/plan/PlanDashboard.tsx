@@ -15,8 +15,6 @@ interface PlanDashboardProps {
   readonly dispatch: (action: PlannerAction) => void;
 }
 
-const RESET_PROMPT = 'Start a new plan? This clears the current plan and its progress.';
-
 /**
  * The plan. Rebuilt from the brief on every load rather than stored, so a
  * saved plan always reflects the current planning rules; only the host's own
@@ -60,11 +58,6 @@ export default function PlanDashboard({
           dispatch({ type: 'edit-brief' });
         }}
         onExportCalendar={exportCalendar}
-        onReset={() => {
-          if (window.confirm(RESET_PROMPT)) {
-            dispatch({ type: 'reset' });
-          }
-        }}
       />
       <Tabs
         label="Plan sections"

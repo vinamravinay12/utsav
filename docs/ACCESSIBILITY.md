@@ -8,7 +8,7 @@ axe violations at every step of the journey in automated tests.
 - Landmarks: `header`, `main` (target of the skip link), `footer`; one `h1` per stage; headings
   nest in order within each tab panel.
 - The skip link is the first focusable element and becomes visible on focus.
-- When the stage changes (start → review → plan) focus moves to `main` and the page scrolls to the
+- When the stage changes (start → review → plan), or the host starts afresh, focus moves to `main` and the page scrolls to the
   top, so a screen-reader user hears the new content rather than the old position.
 
 ## Forms

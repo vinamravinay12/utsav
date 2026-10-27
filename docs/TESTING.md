@@ -8,9 +8,9 @@ Vitest with coverage → production build. CI runs it on every push.
 | Package   | Test files |   Tests | Kind                                         |
 | :-------- | ---------: | ------: | :------------------------------------------- |
 | core      |         18 |     140 | unit, invariant, property, scenario          |
-| server    |         17 |      84 | unit, adapter (fake SDK), HTTP (Supertest)   |
-| client    |         14 |      65 | unit, hook, component, full-journey with axe |
-| **Total** |     **49** | **289** |                                              |
+| server    |         17 |      85 | unit, adapter (fake SDK), HTTP (Supertest)   |
+| client    |         15 |      72 | unit, hook, component, full-journey with axe |
+| **Total** |     **50** | **297** |                                              |
 
 Coverage: **100% statements, branches, functions and lines**, enforced by thresholds in
 [`vitest.config.ts`](../vitest.config.ts) with `all: true`, so an untested file counts against the
@@ -58,7 +58,10 @@ through `buildPlan` end to end.
 
 - `App.test.tsx` drives the real app: describe → review (missing-field errors linked to inputs) →
   plan → every tab → tick a task, book a vendor, overspend and see the reallocation, fetch AI ideas →
-  check what was persisted; plus edit-keeps-progress, confirmed reset, calendar export and print.
+  check what was persisted; plus edit-keeps-progress, calendar export and print.
+- `start-afresh.test.tsx` covers the header button and the logo: confirm before clearing a saved
+  plan, no prompt for a half-filled form, typed text and errors cleared, focus moved to the page,
+  a late AI reply ignored, and Ctrl/Cmd-click left to the browser.
 - `expectNoViolations` (axe) runs at each stage and on each tab.
 - The WAI-ARIA tabs keyboard pattern (arrows, Home, End, wrap-around) has its own test.
 - Restored storage is tested against wrong versions, wrong shapes and individually corrupt values.

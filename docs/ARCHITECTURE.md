@@ -102,6 +102,12 @@ computed plan, which is rebuilt on load so a saved plan always reflects current 
 stored brief goes back through `completeBrief`; malformed entries are dropped field by field.
 Editing a brief keeps progress unless the event type changes (every id would change).
 
+**Starting afresh** — the header button or a plain click on the Utsav logo — runs one path
+(`useStartAfresh`): it asks for confirmation only when a saved plan exists, then clears the plan and
+its storage, any typed description and error, and drops an AI reply still in flight (each request is
+numbered, and a reply counts only if nothing newer has happened). The logo stays a real link, so
+Ctrl/Cmd-click still opens a new tab.
+
 ## Deployment
 
 One Cloud Run service built from the `Dockerfile`: a multi-stage build that ships only the server's

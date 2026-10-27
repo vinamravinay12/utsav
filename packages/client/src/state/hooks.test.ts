@@ -40,6 +40,29 @@ describe('request hooks', () => {
     expect(dispatch).not.toHaveBeenCalled();
   });
 
+  it('drop the error of a request that failed after a reset', async () => {
+    let fail: (reason: Error) => void = () => undefined;
+    vi.stubGlobal(
+      'fetch',
+      () =>
+        new Promise<Response>((_resolve, reject) => {
+          fail = reject;
+        }),
+    );
+    const { result } = renderHook(() => useExtract(TODAY, vi.fn()));
+    act(() => {
+      result.current.describe('A wedding in Jaipur for 200');
+    });
+    act(() => {
+      result.current.clear();
+    });
+    await act(async () => {
+      fail(new TypeError('offline'));
+      await Promise.resolve();
+    });
+    expect(result.current).toMatchObject({ busy: false, error: null });
+  });
+
   it('fall back to a generic message for a non-Error failure', () => {
     expect(messageOf('weird')).toBe('Something went wrong. Please try again.');
     expect(messageOf(new Error('Specific'))).toBe('Specific');
