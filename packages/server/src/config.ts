@@ -27,6 +27,7 @@ export const DEFAULT_PORT = 8080;
 
 type Env = Readonly<Record<string, string | undefined>>;
 
+/** The trimmed value, or undefined when it is missing or blank. */
 const present = (value: string | undefined): string | undefined => {
   const trimmed = value?.trim();
   return trimmed === undefined || trimmed.length === 0 ? undefined : trimmed;
@@ -47,6 +48,7 @@ export function parseModels(env: Env): readonly string[] {
     : [primary, ...DEFAULT_MODELS.filter((model) => model !== primary)];
 }
 
+/** A whole number within [0, max], or the fallback. */
 const parseInteger = (value: string | undefined, fallback: number, max: number): number => {
   const parsed = Number(value);
   return Number.isInteger(parsed) && parsed >= 0 && parsed <= max ? parsed : fallback;

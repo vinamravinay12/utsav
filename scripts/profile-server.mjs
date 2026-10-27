@@ -10,7 +10,7 @@ import { PLANNED_ON, percentile } from './lib/stats.mjs';
 const { createApp } = await import('../packages/server/dist/app.js');
 const { loadConfig } = await import('../packages/server/dist/config.js');
 const { createOfflineClient } = await import('../packages/server/dist/llm/offline-client.js');
-const log = console.log;
+const writeLine = console.log;
 console.log = () => undefined; // silence per-request logs while measuring
 const server = createApp({
   llm: createOfflineClient(),
@@ -22,7 +22,7 @@ await new Promise((resolve) => server.once('listening', resolve));
 const base = `http://127.0.0.1:${server.address().port}`;
 async function http(label, path, body) {
   const samples = [];
-  for (let i = 0; i < 500; i += 1) {
+  for (let request = 0; request < 500; request += 1) {
     const start = performance.now();
     const response = await fetch(
       base + path,
@@ -37,7 +37,7 @@ async function http(label, path, body) {
     await response.arrayBuffer();
     samples.push(performance.now() - start);
   }
-  samples.sort((a, b) => a - b);
+  samples.sort((first, second) => first - second);
   return `| ${label} | ${percentile(samples, 50).toFixed(2)} ms | ${percentile(samples, 95).toFixed(2)} ms |`;
 }
 const rows = [
@@ -56,7 +56,7 @@ const rows = [
   }),
 ];
 server.close();
-console.log = log;
+console.log = writeLine;
 console.log('\n## Server latency over loopback (500 sequential requests, offline model client)\n');
 console.log('| Request | p50 | p95 |\n| :-- | --: | --: |');
 rows.forEach((row) => console.log(row));

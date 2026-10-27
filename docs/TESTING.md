@@ -7,10 +7,10 @@ Vitest with coverage → production build. CI runs it on every push.
 
 | Package   | Test files |   Tests | Kind                                         |
 | :-------- | ---------: | ------: | :------------------------------------------- |
-| core      |         18 |     140 | unit, invariant, property, scenario          |
+| core      |         20 |     140 | unit, invariant, property, scenario          |
 | server    |         17 |      85 | unit, adapter (fake SDK), HTTP (Supertest)   |
 | client    |         15 |      72 | unit, hook, component, full-journey with axe |
-| **Total** |     **50** | **297** |                                              |
+| **Total** |     **52** | **297** |                                              |
 
 Coverage: **100% statements, branches, functions and lines**, enforced by thresholds in
 [`vitest.config.ts`](../vitest.config.ts) with `all: true`, so an untested file counts against the

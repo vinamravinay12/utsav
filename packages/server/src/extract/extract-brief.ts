@@ -53,8 +53,8 @@ export async function extractBrief(
   if (!screenHeuristic(description).safe) {
     return { status: 'rejected' };
   }
-  const key = cacheKey('extract', description, today);
-  const cached = cache.get(key);
+  const requestKey = cacheKey('extract', description, today);
+  const cached = cache.get(requestKey);
   if (cached !== undefined) {
     return cached;
   }
@@ -67,7 +67,7 @@ export async function extractBrief(
     return { status: 'rejected' };
   }
   const draft = readExtraction(raw);
-  const result: ExtractedBrief = { status: 'ok', draft, missing: findMissingFields(draft) };
-  cache.set(key, result);
-  return result;
+  const extracted: ExtractedBrief = { status: 'ok', draft, missing: findMissingFields(draft) };
+  cache.set(requestKey, extracted);
+  return extracted;
 }

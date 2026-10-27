@@ -3,6 +3,7 @@ import { parseWholeNumber } from '../brief/form-values.js';
 import { Badge } from '../ui/Badge.js';
 import { SPEND } from './labels.js';
 
+/** Basis points as a percentage with one decimal, e.g. 1869 → "18.7%". */
 const percent = (shareBp: number): string => `${(shareBp / 100).toFixed(1)}%`;
 
 interface RowProps {
@@ -10,6 +11,7 @@ interface RowProps {
   readonly onSpent: (categoryId: string, amount: number) => void;
 }
 
+/** One category: its share, planned amount, spend input, what is left and its status. */
 function BudgetRow({ line, onSpent }: RowProps): React.JSX.Element {
   const [label, tone] = SPEND[line.status];
   return (

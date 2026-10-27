@@ -8,6 +8,7 @@ interface OverviewPanelProps {
   readonly progress: ProgressSummary;
 }
 
+/** A titled list of tasks with due dates, or a message when there are none. */
 function TaskList({
   title,
   tasks,

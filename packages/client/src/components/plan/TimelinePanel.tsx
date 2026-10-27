@@ -10,6 +10,7 @@ interface TimelinePanelProps {
   readonly onToggle: (taskId: string) => void;
 }
 
+/** One task: its checkbox, detail, due date and any timing warnings. */
 function TaskItem({
   task,
   checked,

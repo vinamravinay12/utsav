@@ -55,6 +55,7 @@ function replan(previous: SavedPlan | null, brief: EventBrief, plannedOn: string
   };
 }
 
+/** Applies a change to the saved plan; does nothing when there is no plan. */
 function updateSaved(state: PlannerState, update: (saved: SavedPlan) => SavedPlan): PlannerState {
   return state.saved === null ? state : { ...state, saved: update(state.saved) };
 }
@@ -64,8 +65,9 @@ type Handler<T extends PlannerAction['type']> = (
   action: Extract<PlannerAction, { type: T }>,
 ) => PlannerState;
 
-const toggle = (ids: readonly string[], id: string): string[] =>
-  ids.includes(id) ? ids.filter((entry) => entry !== id) : [...ids, id];
+/** Adds the id if absent, removes it if present. */
+const toggle = (doneIds: readonly string[], id: string): string[] =>
+  doneIds.includes(id) ? doneIds.filter((existing) => existing !== id) : [...doneIds, id];
 
 /** One small handler per action, so each transition reads and tests on its own. */
 const HANDLERS: { readonly [T in PlannerAction['type']]: Handler<T> } = {

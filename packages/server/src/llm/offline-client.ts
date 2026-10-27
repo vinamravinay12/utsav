@@ -23,6 +23,7 @@ export function readBudget(text: string): number | null {
   return rupees === null ? null : Number(rupees[0].replace(/[₹,\s]/g, ''));
 }
 
+/** A best-effort keyword reading of a description, in the extraction schema’s shape. */
 function readDescription(text: string): Record<string, unknown> {
   const guests = /(\d+)\s*(guests|people|attendees|family and friends)/i.exec(text);
   return {

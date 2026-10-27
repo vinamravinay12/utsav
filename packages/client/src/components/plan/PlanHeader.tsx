@@ -9,6 +9,7 @@ interface PlanHeaderProps {
   readonly onExportCalendar: () => void;
 }
 
+/** The readiness bar and a one-line count of what is done. */
 function Readiness({ progress }: { readonly progress: ProgressSummary }): React.JSX.Element {
   return (
     <div>
@@ -27,6 +28,7 @@ function Readiness({ progress }: { readonly progress: ProgressSummary }): React.
   );
 }
 
+/** Edit, calendar export and print. */
 function Actions({
   onEdit,
   onExportCalendar,

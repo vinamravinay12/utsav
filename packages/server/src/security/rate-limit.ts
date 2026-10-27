@@ -10,7 +10,7 @@ export interface RateLimitOptions {
 }
 
 /** Generous for one person planning an event; far below scripted abuse of the model quota. */
-export const AI_RATE_LIMIT: RateLimitOptions = {
+const AI_RATE_LIMIT: RateLimitOptions = {
   windowMs: 60_000,
   max: 10,
   maxClients: 10_000,
@@ -33,6 +33,7 @@ interface ClientWindow {
  */
 export const clientKey = (request: Pick<Request, 'ip'>): string => request.ip ?? 'unknown';
 
+/** Makes room in a full table: drops expired windows first, then the oldest one. */
 function evict(windows: Map<string, ClientWindow>, now: number, maxClients: number): void {
   for (const [key, window] of windows) {
     if (window.resetAt <= now) {
@@ -55,14 +56,14 @@ function evict(windows: Map<string, ClientWindow>, now: number, maxClients: numb
 export function rateLimit(options: RateLimitOptions = AI_RATE_LIMIT) {
   const windows = new Map<string, ClientWindow>();
   return (request: Request, response: Response, next: NextFunction): void => {
-    const key = clientKey(request);
+    const client = clientKey(request);
     const now = options.now();
-    const existing = windows.get(key);
+    const existing = windows.get(client);
     if (existing === undefined || existing.resetAt <= now) {
       if (windows.size >= options.maxClients) {
         evict(windows, now, options.maxClients);
       }
-      windows.set(key, { count: 1, resetAt: now + options.windowMs });
+      windows.set(client, { count: 1, resetAt: now + options.windowMs });
       next();
       return;
     }

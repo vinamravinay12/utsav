@@ -9,6 +9,7 @@ import type {
   VendorItem,
 } from '../types/index.js';
 
+/** When to book a vendor, compressed on the same curve as tasks when time is short. */
 function bookingWindow(
   bookDaysBefore: number,
   daysUntilEvent: number,
@@ -51,5 +52,5 @@ export function buildVendorChecklist(
         contractChecks: spec.contractChecks,
       };
     })
-    .sort((a, b) => a.bookBy.localeCompare(b.bookBy));
+    .sort((first, second) => first.bookBy.localeCompare(second.bookBy));
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addDays, daysBetween, isIsoDate, laterOf, monthOf, weekdayOf } from './iso-date.js';
+import { addDays, daysBetween, isIsoDate, monthOf, weekdayOf } from './iso-date.js';
 
 describe('iso dates', () => {
   it('accepts real calendar dates only', () => {
@@ -33,10 +33,5 @@ describe('iso dates', () => {
   it('throws on a malformed date rather than computing nonsense', () => {
     expect(() => addDays('2026-02-30', 1)).toThrow(RangeError);
     expect(() => monthOf('not a date')).toThrow(RangeError);
-  });
-
-  it('picks the later of two dates', () => {
-    expect(laterOf('2026-01-01', '2026-02-01')).toBe('2026-02-01');
-    expect(laterOf('2026-03-01', '2026-02-01')).toBe('2026-03-01');
   });
 });

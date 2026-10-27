@@ -70,15 +70,21 @@ export const DIETARY: readonly (readonly [DietaryId, string])[] = [
   ['nut-free', 'Nut-free'],
 ];
 
+/** The ids of a labelled vocabulary, in order. */
 const idsOf = <T extends string>(entries: readonly (readonly [T, string])[]): readonly T[] =>
   entries.map(([id]) => id);
 
-/** The ids alone, for validation. */
+/** Event type ids, for validation. */
 export const EVENT_TYPE_IDS = idsOf(EVENT_TYPES);
+/** Setting ids, for validation. */
 export const SETTING_IDS = idsOf(SETTINGS);
+/** Style ids, for validation. */
 export const STYLE_IDS = idsOf(STYLES);
+/** Age-group ids, for validation. */
 export const AGE_GROUP_IDS = idsOf(AGE_GROUPS);
+/** Interest ids, for validation. */
 export const INTEREST_IDS = idsOf(INTERESTS);
+/** Dietary ids, for validation. */
 export const DIETARY_IDS = idsOf(DIETARY);
 
 /** Looks a label up by id; an unknown id falls back to itself rather than throwing. */
@@ -90,5 +96,5 @@ export function labelOf<T extends string>(
 }
 
 /** Narrows an untrusted string to a vocabulary member. */
-export const isMember = <T extends string>(ids: readonly T[], value: unknown): value is T =>
-  typeof value === 'string' && (ids as readonly string[]).includes(value);
+export const isMember = <T extends string>(allowed: readonly T[], value: unknown): value is T =>
+  typeof value === 'string' && (allowed as readonly string[]).includes(value);

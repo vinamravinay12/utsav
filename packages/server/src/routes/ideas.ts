@@ -16,19 +16,19 @@ export function ideasRouter(dependencies: IdeasDependencies, now: () => Date): R
       return;
     }
     const today = resolveToday(parsed.data.today, now());
-    const result = completeBrief(parsed.data.brief, today);
-    if (!result.ok) {
-      response.status(400).json({ error: 'The brief is incomplete.', issues: result.issues });
+    const briefCheck = completeBrief(parsed.data.brief, today);
+    if (!briefCheck.ok) {
+      response.status(400).json({ error: 'The brief is incomplete.', issues: briefCheck.issues });
       return;
     }
     // Name and city are the only free text in a brief. They are short and
     // cleaned by the engine, so the pattern layer is enough here.
-    if (!screenHeuristic(`${result.brief.name} ${result.brief.city}`).safe) {
+    if (!screenHeuristic(`${briefCheck.brief.name} ${briefCheck.brief.city}`).safe) {
       response.status(422).json({ error: 'The event name or city contains text we cannot use.' });
       return;
     }
     try {
-      response.json({ ideas: await generateIdeas(dependencies, result.brief, today) });
+      response.json({ ideas: await generateIdeas(dependencies, briefCheck.brief, today) });
     } catch (cause) {
       if (!respondToLlmError(cause, response)) {
         throw cause;

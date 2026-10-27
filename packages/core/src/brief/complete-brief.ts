@@ -32,6 +32,7 @@ export function findMissingFields(draft: BriefDraft): BriefIssue[] {
   }));
 }
 
+/** Why the date cannot be planned for, or undefined if it can. */
 function dateIssue(eventDate: string, today: string): BriefIssue | undefined {
   const lead = daysBetween(today, eventDate);
   if (lead < 0) {

@@ -49,12 +49,13 @@ export function memberList<T extends string>(
   return [...new Set(members)].slice(0, limit);
 }
 
+/** Budget category ids of an event type, or none when the type is unknown. */
 const categoryIdsFor = (eventType: EventTypeId | undefined): readonly string[] =>
   eventType === undefined ? [] : findTemplate(eventType).budget.map((category) => category.id);
 
 /** The value if it belongs to the vocabulary, otherwise undefined. */
-const vocabularyValue = <T extends string>(ids: readonly T[], value: unknown): T | undefined =>
-  isMember(ids, value) ? value : undefined;
+const vocabularyValue = <T extends string>(allowed: readonly T[], value: unknown): T | undefined =>
+  isMember(allowed, value) ? value : undefined;
 
 /**
  * Reduces untrusted input — the AI extractor's output or a restored session —

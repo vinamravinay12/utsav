@@ -4,7 +4,7 @@ interface FieldShellProps {
   readonly label: string;
   readonly hint?: string | undefined;
   readonly error?: string | undefined;
-  readonly children: (ids: {
+  readonly children: (controlIds: {
     readonly id: string;
     readonly describedBy: string | undefined;
   }) => React.ReactNode;
@@ -15,7 +15,7 @@ interface FieldShellProps {
  * its label and described by its hint and error, so a screen reader announces
  * what is wrong as the host lands on it.
  */
-export function FieldShell({ label, hint, error, children }: FieldShellProps): React.JSX.Element {
+function FieldShell({ label, hint, error, children }: FieldShellProps): React.JSX.Element {
   const id = useId();
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;

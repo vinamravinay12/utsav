@@ -17,7 +17,7 @@ import { IDEA_LIMITS, aiIdeasSchema, toResponseSchema } from '../validation/sche
 import { DATA_NOT_INSTRUCTIONS, fenceUntrusted } from './fence-untrusted.js';
 
 /** What the model is asked to write, and the limits it must respect. */
-export const IDEAS_INSTRUCTION = [
+const IDEAS_INSTRUCTION = [
   'You suggest personalised, practical ideas for an event in India.',
   `Return up to ${String(IDEA_LIMITS.count)} ideas. Each must be specific to this host’s style, interests, guests, city and season, and clearly different from the ideas they have already seen.`,
   `Each idea belongs to exactly one of the given budget categories. Its estimatedCost, in whole rupees, is the realistic extra cost of the idea itself — typically 10–30% of that category’s amount and never more than ${formatShare(AI_IDEA_MAX_CATEGORY_SHARE)}, because the category must still pay for everything else.`,
@@ -54,12 +54,12 @@ export function buildIdeasRequest(plan: EventPlan, lines: readonly BudgetLine[])
     `Event name and city as the host wrote them:\n${fenceUntrusted(`${brief.name} — ${brief.city}`)}`,
   ];
   // Non-empty for any valid brief; see spendableLines.
-  const ids = lines.map((line) => line.categoryId) as [string, ...string[]];
+  const categoryIds = lines.map((line) => line.categoryId) as [string, ...string[]];
   return {
     purpose: 'ideas',
     systemInstruction: IDEAS_INSTRUCTION,
     prompt: facts.join('\n'),
-    schema: toResponseSchema(aiIdeasSchema(ids)),
+    schema: toResponseSchema(aiIdeasSchema(categoryIds)),
     temperature: 0.7,
   };
 }

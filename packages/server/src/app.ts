@@ -48,10 +48,12 @@ export function describeBodyError(error: unknown): { status: number; message: st
   return status === 404 ? { status: 404, message: 'Not found.' } : undefined;
 }
 
+/** JSON 404 for any route that does not exist. */
 const notFound = (_request: Request, response: Response): void => {
   response.status(404).json({ error: 'Not found.' });
 };
 
+/** Last-resort handler: known request errors get their status; anything else is logged and answered with a generic 500. */
 function errorHandler(
   error: unknown,
   _request: Request,

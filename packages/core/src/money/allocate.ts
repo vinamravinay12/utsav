@@ -3,7 +3,8 @@ export interface Allocation<T> {
   readonly amount: number;
 }
 
-const sum = (values: readonly number[]): number =>
+/** Total of a list of numbers. */
+const sumOf = (values: readonly number[]): number =>
   values.reduce((total, value) => total + value, 0);
 
 /**
@@ -18,16 +19,16 @@ export function allocateByWeight<T>(
   items: readonly T[],
   weightOf: (item: T) => number,
 ): Allocation<T>[] {
-  const weightSum = sum(items.map(weightOf));
+  const weightSum = sumOf(items.map(weightOf));
   if (weightSum <= 0 || total <= 0) {
     return items.map((item) => ({ item, amount: 0 }));
   }
   const exactOf = (item: T): number => (total * weightOf(item)) / weightSum;
-  const leftover = total - sum(items.map((item) => Math.floor(exactOf(item))));
+  const leftover = total - sumOf(items.map((item) => Math.floor(exactOf(item))));
   const bonus = new Set(
     items
       .map((item, index) => ({ index, remainder: exactOf(item) - Math.floor(exactOf(item)) }))
-      .sort((a, b) => b.remainder - a.remainder || a.index - b.index)
+      .sort((first, second) => second.remainder - first.remainder || first.index - second.index)
       .slice(0, leftover)
       .map(({ index }) => index),
   );

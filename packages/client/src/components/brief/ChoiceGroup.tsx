@@ -27,7 +27,7 @@ export function ChoiceGroup(props: ChoiceGroupProps): React.JSX.Element {
       return [value];
     }
     return selected.includes(value)
-      ? selected.filter((entry) => entry !== value)
+      ? selected.filter((chosen) => chosen !== value)
       : [...selected, value];
   };
   return (

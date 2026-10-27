@@ -10,6 +10,7 @@ interface VendorsPanelProps {
   readonly onStatus: (vendorId: string, status: VendorStatus) => void;
 }
 
+/** What to ask a vendor and what to get in writing, collapsed by default. */
 function VendorQuestions({ vendor }: { readonly vendor: VendorItem }): React.JSX.Element {
   return (
     <details className="rounded-lg bg-brand-soft px-4 py-2 text-sm">
@@ -36,6 +37,7 @@ interface StatusSelectProps {
   readonly onStatus: (vendorId: string, status: VendorStatus) => void;
 }
 
+/** Where the booking stands with this vendor. */
 function StatusSelect({ vendor, status, onStatus }: StatusSelectProps): React.JSX.Element {
   const selectId = `vendor-${vendor.id}`;
   return (
@@ -62,6 +64,7 @@ function StatusSelect({ vendor, status, onStatus }: StatusSelectProps): React.JS
   );
 }
 
+/** One vendor: book-by date, expected fee and advance, status and questions. */
 function VendorCard({
   vendor,
   status,

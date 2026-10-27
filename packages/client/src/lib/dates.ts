@@ -1,8 +1,9 @@
-const pad = (value: number): string => String(value).padStart(2, '0');
+/** 5 → "05", for month and day parts. */
+const twoDigits = (value: number): string => String(value).padStart(2, '0');
 
 /** The host's calendar day, in their own time zone, as YYYY-MM-DD. */
 export function todayIso(now: Date = new Date()): string {
-  return `${String(now.getFullYear())}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+  return `${String(now.getFullYear())}-${twoDigits(now.getMonth() + 1)}-${twoDigits(now.getDate())}`;
 }
 
 const DISPLAY = new Intl.DateTimeFormat('en-IN', {

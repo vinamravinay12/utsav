@@ -70,8 +70,9 @@ export function placeTask(
   return { daysBefore: Math.max(spec.latestDaysBefore, compressed), timing: 'compressed' };
 }
 
-const byDueDate = (a: ScheduledTask, b: ScheduledTask): number =>
-  a.dueDate.localeCompare(b.dueDate) || Number(b.essential) - Number(a.essential);
+/** Earliest due first; on the same day, essential tasks before optional ones. */
+const byDueDate = (first: ScheduledTask, second: ScheduledTask): number =>
+  first.dueDate.localeCompare(second.dueDate) || Number(second.essential) - Number(first.essential);
 
 /** The applicable tasks for this brief, each with a concrete due date, in the order to do them. */
 export function scheduleTasks(

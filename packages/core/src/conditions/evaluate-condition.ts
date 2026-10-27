@@ -2,21 +2,23 @@ import type { Condition, ContextValue, PlanningContext } from '../types/index.js
 
 type LeafCondition = Extract<Condition, { readonly field: string }>;
 
+/** The value when it is a number, otherwise undefined. */
 const asNumber = (value: ContextValue | undefined): number | undefined =>
   typeof value === 'number' ? value : undefined;
 
+/** Evaluates a single comparison against one context field. */
 function evaluateLeaf(condition: LeafCondition, context: PlanningContext): boolean {
-  const value = context[condition.field];
+  const fieldValue = context[condition.field];
   if ('equals' in condition) {
-    return value === condition.equals;
+    return fieldValue === condition.equals;
   }
   if ('oneOf' in condition) {
-    return typeof value === 'string' && condition.oneOf.includes(value);
+    return typeof fieldValue === 'string' && condition.oneOf.includes(fieldValue);
   }
   if ('has' in condition) {
-    return Array.isArray(value) && value.includes(condition.has);
+    return Array.isArray(fieldValue) && fieldValue.includes(condition.has);
   }
-  const number = asNumber(value);
+  const number = asNumber(fieldValue);
   if (number === undefined) {
     return false;
   }

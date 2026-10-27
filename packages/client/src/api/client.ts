@@ -13,6 +13,7 @@ async function errorMessage(response: Response): Promise<string> {
   }
 }
 
+/** POSTs JSON and returns the parsed body, turning any failure into an ApiError with a readable message. */
 async function postJson<T>(path: string, body: unknown): Promise<T> {
   let response: Response;
   try {

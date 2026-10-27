@@ -8,6 +8,7 @@ interface BudgetPanelProps {
   readonly onSpent: (categoryId: string, amount: number) => void;
 }
 
+/** Where to move money from to cover overspending; renders nothing while on budget. */
 function Rebalance({ summary }: { readonly summary: SpendingSummary }): React.JSX.Element | null {
   if (summary.suggestions.length === 0 && summary.uncovered === 0) {
     return null;

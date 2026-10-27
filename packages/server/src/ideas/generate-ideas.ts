@@ -55,7 +55,7 @@ export function validateIdeas(
 ): AiIdea[] {
   const seen = new Set(plan.ideas.map((idea) => idea.title.toLowerCase()));
   return candidates.flatMap((candidate): AiIdea[] => {
-    const line = lines.find((entry) => entry.categoryId === candidate.categoryId);
+    const line = lines.find((line) => line.categoryId === candidate.categoryId);
     const title = cleanText(candidate.title, IDEA_LIMITS.title);
     const description = cleanText(candidate.description, IDEA_LIMITS.description);
     const text = `${candidate.title} ${candidate.description}`;
@@ -93,8 +93,8 @@ export async function generateIdeas(
   brief: EventBrief,
   today: string,
 ): Promise<readonly AiIdea[]> {
-  const key = cacheKey('ideas', brief, today);
-  const cached = cache.get(key);
+  const requestKey = cacheKey('ideas', brief, today);
+  const cached = cache.get(requestKey);
   if (cached !== undefined) {
     return cached;
   }
@@ -107,12 +107,12 @@ export async function generateIdeas(
     logEvent('WARNING', 'ideas answered off-schema');
     return [];
   }
-  const candidates = envelope.data.ideas.flatMap((entry) => {
-    const candidate = ideaCandidateSchema.safeParse(entry);
+  const candidates = envelope.data.ideas.flatMap((proposed) => {
+    const candidate = ideaCandidateSchema.safeParse(proposed);
     return candidate.success ? [candidate.data] : [];
   });
   const ideas = validateIdeas(candidates, plan, lines);
   logEvent('INFO', 'ideas validated', { proposed: envelope.data.ideas.length, kept: ideas.length });
-  cache.set(key, ideas);
+  cache.set(requestKey, ideas);
   return ideas;
 }

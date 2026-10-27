@@ -26,6 +26,7 @@ function isWorkable(idea: IdeaSpec, brief: EventBrief, tier: BudgetTier): boolea
   return settingOk && audienceOk && AFFORDABLE[tier].includes(idea.costTier);
 }
 
+/** How well an idea matches the brief, and the reasons that earned each point. */
 function scoreMatch(idea: IdeaSpec, brief: EventBrief): { score: number; reasons: string[] } {
   const reasons: string[] = [];
   let total = 0;
@@ -83,7 +84,7 @@ export function rankIdeas(
   return ideas
     .filter((idea) => isWorkable(idea, brief, tier))
     .map((idea, order) => ({ idea, order, ...scoreMatch(idea, brief) }))
-    .sort((a, b) => b.score - a.score || a.order - b.order)
+    .sort((first, second) => second.score - first.score || first.order - second.order)
     .filter(withinCategoryLimit())
     .slice(0, limit)
     .map(({ idea, score: total, reasons }) => ({

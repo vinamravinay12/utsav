@@ -10,23 +10,23 @@ import {
 import { isQuotaExceeded, withRetry, type RetryOptions } from './retry.js';
 
 /** Waits; the default delay between retries. */
-export const sleep = (ms: number): Promise<void> =>
+export const sleep = (delayMs: number): Promise<void> =>
   new Promise((resolve) => {
-    setTimeout(resolve, ms);
+    setTimeout(resolve, delayMs);
   });
 
 /** Two attempts, 500 ms apart, for transient upstream errors. */
-export const DEFAULT_RETRY: RetryOptions = { attempts: 2, baseDelayMs: 500, delay: sleep };
+const DEFAULT_RETRY: RetryOptions = { attempts: 2, baseDelayMs: 500, delay: sleep };
 
 /**
  * Per model, not per request. A hung call must not hold a Cloud Run slot open,
  * and Gemini 3.6 Flash latency varies widely under load (2.5 s to 17 s measured),
  * so a slow answer hands over to the faster Flash-Lite fallback instead.
  */
-export const REQUEST_TIMEOUT_MS = 10_000;
+const REQUEST_TIMEOUT_MS = 10_000;
 
 /** Ceilings sized to each schema: a guard verdict is tiny, four ideas are not. */
-export const MAX_OUTPUT_TOKENS: Readonly<Record<LlmPurpose, number>> = {
+const MAX_OUTPUT_TOKENS: Readonly<Record<LlmPurpose, number>> = {
   guard: 120,
   extract: 600,
   ideas: 1200,
@@ -37,7 +37,7 @@ export const MAX_OUTPUT_TOKENS: Readonly<Record<LlmPurpose, number>> = {
  * task with a fixed schema, and on Gemini 3.6 Flash default thinking spent the
  * whole output budget on reasoning tokens and returned truncated JSON.
  */
-export const THINKING_LEVEL: Readonly<Record<LlmPurpose, ThinkingLevel>> = {
+const THINKING_LEVEL: Readonly<Record<LlmPurpose, ThinkingLevel>> = {
   guard: ThinkingLevel.MINIMAL,
   extract: ThinkingLevel.MINIMAL,
   ideas: ThinkingLevel.MINIMAL,

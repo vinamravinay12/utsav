@@ -43,7 +43,7 @@ export default function PlanDashboard({
     },
     [dispatch],
   );
-  const ai = useAiIdeas(saved.brief, today, onIdeas);
+  const aiIdeasRequest = useAiIdeas(saved.brief, today, onIdeas);
   const exportCalendar = (): void => {
     const pending = new Set(plan.tasks.filter((task) => !done.has(task.id)).map((task) => task.id));
     downloadFile(`${slugify(saved.brief.name)}.ics`, toICalendar(plan, pending), 'text/calendar');
@@ -61,7 +61,7 @@ export default function PlanDashboard({
       />
       <Tabs
         label="Plan sections"
-        tabs={planTabs({ plan, saved, progress, done, today, ai, dispatch })}
+        tabs={planTabs({ plan, saved, progress, done, today, aiIdeasRequest, dispatch })}
         active={tab}
         onSelect={setTab}
       />

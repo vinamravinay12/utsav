@@ -5,7 +5,7 @@ import type { BudgetCategorySpec, BudgetLine } from '../types/index.js';
 export const PRIORITY_BOOST = 1.3;
 
 /** A whole budget expressed in basis points (1 bp = 0.01%). */
-export const BASIS_POINTS = 10_000;
+const BASIS_POINTS = 10_000;
 
 /**
  * Turns template shares and the host's priorities into effective shares.

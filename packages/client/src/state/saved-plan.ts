@@ -24,6 +24,7 @@ export interface SavedPlan {
 
 type Raw = Readonly<Record<string, unknown>>;
 
+/** A plain object, not null or an array. */
 const isRecord = (value: unknown): value is Raw =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
@@ -36,12 +37,14 @@ function validEntries<T>(value: unknown, keep: (entry: unknown) => entry is T): 
     : {};
 }
 
+/** One of the four booking statuses. */
 const isVendorStatus = (value: unknown): value is VendorStatus => isMember(VENDOR_STATUSES, value);
 
 /** A spend amount: whole rupees, never negative, within a sane ceiling. */
 const isSpendAmount = (value: unknown): value is number =>
   typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= MAX_SPEND;
 
+/** Whether a stored value has every field an AI idea needs. */
 function isAiIdea(value: unknown): value is AiIdea {
   return (
     isRecord(value) &&
@@ -87,8 +90,8 @@ export function parseSavedPlan(value: unknown): SavedPlan | null {
 /** Storage can throw outright in a private window or with site data blocked. */
 export function loadSavedPlan(storage: Pick<Storage, 'getItem'> = localStorage): SavedPlan | null {
   try {
-    const raw = storage.getItem(STORAGE_KEY);
-    return raw === null ? null : parseSavedPlan(JSON.parse(raw));
+    const storedJson = storage.getItem(STORAGE_KEY);
+    return storedJson === null ? null : parseSavedPlan(JSON.parse(storedJson));
   } catch {
     return null;
   }

@@ -17,9 +17,11 @@ export function fenceUntrusted(text: string): string {
 
 /** Reads back only the fenced span of a built prompt (used by the offline client). */
 export function extractFenced(prompt: string): string {
-  const start = prompt.indexOf(FENCE_OPEN);
-  const end = prompt.lastIndexOf(FENCE_CLOSE);
-  return start === -1 || end < start ? '' : prompt.slice(start + FENCE_OPEN.length, end).trim();
+  const openIndex = prompt.indexOf(FENCE_OPEN);
+  const closeIndex = prompt.lastIndexOf(FENCE_CLOSE);
+  return openIndex === -1 || closeIndex < openIndex
+    ? ''
+    : prompt.slice(openIndex + FENCE_OPEN.length, closeIndex).trim();
 }
 
 /** The rule every system instruction carries. */

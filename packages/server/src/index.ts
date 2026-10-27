@@ -15,6 +15,7 @@ if (mode === 'offline') {
   logEvent('WARNING', 'No GEMINI_API_KEY set: running with the offline keyword reader.');
 }
 
+/** The listening HTTP server, kept so it can close cleanly on shutdown. */
 const server = createApp({ llm, config, mode }).listen(config.port, () => {
   logEvent('INFO', 'Utsav listening', { port: config.port, mode, models: config.models });
 });

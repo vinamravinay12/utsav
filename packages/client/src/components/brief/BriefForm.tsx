@@ -15,6 +15,7 @@ interface BriefFormProps {
   readonly onCancel: () => void;
 }
 
+/** Heading, plus what the AI could not find in the description. */
 function FormIntro({
   editing,
   missing,
@@ -72,11 +73,11 @@ export function BriefForm({
       aria-labelledby="brief-title"
       onSubmit={(event) => {
         event.preventDefault();
-        const result = completeBrief(toDraft(values), today);
-        if (result.ok) {
-          onSubmit(result.brief);
+        const validation = completeBrief(toDraft(values), today);
+        if (validation.ok) {
+          onSubmit(validation.brief);
         } else {
-          setIssues(result.issues);
+          setIssues(validation.issues);
         }
       }}
     >

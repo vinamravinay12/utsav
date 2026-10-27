@@ -61,8 +61,10 @@ export function foldLine(line: string): string {
   return parts.join('\r\n ');
 }
 
+/** 2027-02-14 → 20270214, the iCalendar DATE form. */
 const compact = (isoDate: string): string => isoDate.replace(/-/g, '');
 
+/** The lines of one all-day VEVENT. */
 function allDayEvent(uid: string, date: string, summary: string, description: string): string[] {
   return [
     'BEGIN:VEVENT',

@@ -23,9 +23,14 @@ Every rule below is enforced by configuration and fails the build; none is a gui
   place: `BRIEF_LIMITS`, the vocabularies, and `AI_IDEA_MAX_CATEGORY_SHARE` (used by the server's
   validator, the prompt and the sentence that explains the rule on the page). The colour palette is
   defined once with `light-dark()`.
-- **Names say what things are for:** `bindInput`, `bindSingleChoice`, `vocabularyValue`,
-  `completedShare`, `isWorkable`, `scoreMatch`, `ClientWindow` — no one-letter or generic helpers.
-- **Every exported function, component and constant has a doc comment.**
+- **Names say what things are for:** `bindInput`, `vocabularyValue`, `completedShare`,
+  `isWorkable`, `scoreMatch`, `ClientWindow`, `requestKey`, `briefCheck`, `objectUrl`. Sort
+  comparators read `(first, second)`. No one-letter or generic names; the
+  cache API keeps `key`, the standard term.
+- **Only what is used is exported.** Constants and components used in a single module stay private
+  to it; nothing is exported only to be ignored, and dead helpers are deleted.
+- **Every function has a doc comment** — exported or internal, including sub-components — saying
+  what it is for rather than restating its name.
 - **Knowledge as data.** Event templates, vocabularies, seasons and insight rules are declarative;
   logic lives in one tested function per concern (`evaluateCondition`, `allocateByWeight`, …).
 - **One concern per module**, named for what it does (`summarize-spending.ts`, `screen-input.ts`).

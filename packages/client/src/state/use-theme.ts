@@ -4,6 +4,7 @@ export type ThemePreference = 'system' | 'light' | 'dark';
 
 const STORAGE_KEY = 'utsav-theme';
 
+/** Whether a stored value is one of the three theme choices. */
 const isPreference = (value: unknown): value is ThemePreference =>
   value === 'system' || value === 'light' || value === 'dark';
 
@@ -24,6 +25,7 @@ export function readStoredPreference(
   }
 }
 
+/** Remembers the choice; a browser that refuses storage is ignored. */
 function persist(preference: ThemePreference): void {
   try {
     globalThis.localStorage.setItem(STORAGE_KEY, preference);

@@ -28,6 +28,7 @@ export function isIsoDate(value: string): boolean {
   return toEpochDay(value) !== undefined;
 }
 
+/** Days since 1970-01-01 for a valid date; throws for anything else. */
 function requireEpochDay(date: string): number {
   const epochDay = toEpochDay(date);
   if (epochDay === undefined) {
@@ -36,6 +37,7 @@ function requireEpochDay(date: string): number {
   return epochDay;
 }
 
+/** The ISO date for a count of days since 1970-01-01. */
 const fromEpochDay = (epochDay: number): string =>
   new Date(epochDay * MS_PER_DAY).toISOString().slice(0, 10);
 
@@ -59,6 +61,3 @@ export function monthOf(date: string): number {
 export function weekdayOf(date: string): number {
   return new Date(requireEpochDay(date) * MS_PER_DAY).getUTCDay();
 }
-
-/** The later of two ISO dates (they sort as strings). */
-export const laterOf = (a: string, b: string): string => (a >= b ? a : b);

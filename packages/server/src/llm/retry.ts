@@ -5,13 +5,13 @@
 const RETRYABLE_STATUSES: ReadonlySet<number> = new Set([500, 502, 503, 504]);
 
 /** HTTP status Gemini uses when the quota is spent. */
-export const QUOTA_EXCEEDED_STATUS = 429;
+const QUOTA_EXCEEDED_STATUS = 429;
 
 export interface RetryOptions {
   readonly attempts: number;
   readonly baseDelayMs: number;
   /** Injected so tests never wait in real time. */
-  readonly delay: (ms: number) => Promise<void>;
+  readonly delay: (delayMs: number) => Promise<void>;
 }
 
 /** The SDK reports the upstream status either as a field or as JSON inside the message. */

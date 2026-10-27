@@ -3,6 +3,7 @@ import type { LlmRequest } from '../llm/llm-client.js';
 import { extractionSchema, toResponseSchema } from '../validation/schemas.js';
 import { DATA_NOT_INSTRUCTIONS, fenceUntrusted } from './fence-untrusted.js';
 
+/** An event type’s spendable categories as "id (Label)", for the prompt. */
 const categoryList = (template: EventTemplate): string =>
   template.budget
     .filter((category) => category.isContingency !== true)
@@ -13,7 +14,7 @@ const categoryList = (template: EventTemplate): string =>
  * The model's only job here is reading: turn a host's own words into fields.
  * It does not plan, price or advise — the deterministic engine does all of that.
  */
-export const EXTRACTION_INSTRUCTION = [
+const EXTRACTION_INSTRUCTION = [
   'You are the intake step of an Indian event-planning assistant.',
   'Extract only facts the host states or clearly implies. Use null for anything not given; never guess.',
   'eventType: weddings, receptions and engagements are "wedding"; any birthday is "birthday"; festivals, fairs, fundraisers, drives, club or residents-association events are "community". Anything else is null.',

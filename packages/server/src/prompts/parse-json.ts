@@ -5,13 +5,13 @@
  * stray prose around the object is tolerated, anything unparseable is undefined.
  */
 export function parseJson(raw: string): unknown {
-  const start = raw.indexOf('{');
-  const end = raw.lastIndexOf('}');
-  if (start === -1 || end < start) {
+  const objectStart = raw.indexOf('{');
+  const objectEnd = raw.lastIndexOf('}');
+  if (objectStart === -1 || objectEnd < objectStart) {
     return undefined;
   }
   try {
-    return JSON.parse(raw.slice(start, end + 1)) as unknown;
+    return JSON.parse(raw.slice(objectStart, objectEnd + 1)) as unknown;
   } catch {
     return undefined;
   }

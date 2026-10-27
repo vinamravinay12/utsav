@@ -21,6 +21,7 @@ interface TabButtonProps {
   readonly onKeyDown: (event: React.KeyboardEvent) => void;
 }
 
+/** One tab; only the selected tab is in the keyboard tab order. */
 function TabButton({
   tab,
   selected,

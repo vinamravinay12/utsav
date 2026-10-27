@@ -15,10 +15,11 @@ export interface PlanTabsInput {
   readonly progress: ProgressSummary;
   readonly done: ReadonlySet<string>;
   readonly today: string;
-  readonly ai: AiIdeasRequest;
+  readonly aiIdeasRequest: AiIdeasRequest;
   readonly dispatch: (action: PlannerAction) => void;
 }
 
+/** The budget tab, raising spend changes. */
 const budgetContent = ({ plan, saved, dispatch }: PlanTabsInput): React.ReactNode => (
   <BudgetPanel
     plan={plan}
@@ -29,6 +30,7 @@ const budgetContent = ({ plan, saved, dispatch }: PlanTabsInput): React.ReactNod
   />
 );
 
+/** The timeline tab, raising task ticks. */
 const timelineContent = ({ plan, done, today, dispatch }: PlanTabsInput): React.ReactNode => (
   <TimelinePanel
     tasks={plan.tasks}
@@ -40,6 +42,7 @@ const timelineContent = ({ plan, done, today, dispatch }: PlanTabsInput): React.
   />
 );
 
+/** The vendors tab, raising status changes. */
 const vendorsContent = ({ plan, saved, today, dispatch }: PlanTabsInput): React.ReactNode => (
   <VendorsPanel
     vendors={plan.vendors}
@@ -51,14 +54,15 @@ const vendorsContent = ({ plan, saved, today, dispatch }: PlanTabsInput): React.
   />
 );
 
-const ideasContent = ({ plan, saved, ai }: PlanTabsInput): React.ReactNode => (
+/** The ideas tab, with the on-demand AI request. */
+const ideasContent = ({ plan, saved, aiIdeasRequest }: PlanTabsInput): React.ReactNode => (
   <IdeasPanel
     ideas={plan.ideas}
     aiIdeas={saved.aiIdeas}
-    busy={ai.busy}
-    error={ai.error}
-    requested={ai.requested}
-    onRequestAi={ai.request}
+    busy={aiIdeasRequest.busy}
+    error={aiIdeasRequest.error}
+    requested={aiIdeasRequest.requested}
+    onRequestAi={aiIdeasRequest.request}
   />
 );
 

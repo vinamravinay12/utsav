@@ -53,52 +53,56 @@ const BRIEFS = {
   },
 };
 
-function time(fn, iterations) {
-  for (let i = 0; i < 200; i += 1) fn(); // warm the JIT
+/** Latency percentiles and throughput of `operation`, after a JIT warm-up. */
+function measure(operation, iterations) {
+  for (let warmUp = 0; warmUp < 200; warmUp += 1) operation(); // warm the JIT
   const samples = [];
-  for (let i = 0; i < iterations; i += 1) {
+  for (let run = 0; run < iterations; run += 1) {
     const start = performance.now();
-    fn();
+    operation();
     samples.push(performance.now() - start);
   }
-  samples.sort((a, b) => a - b);
-  const us = (ms) => `${(ms * 1000).toFixed(1)} µs`;
+  samples.sort((first, second) => first - second);
+  const microseconds = (milliseconds) => `${(milliseconds * 1000).toFixed(1)} µs`;
   return {
-    p50: us(percentile(samples, 50)),
-    p95: us(percentile(samples, 95)),
-    p99: us(percentile(samples, 99)),
-    opsPerSec: Math.round((iterations / samples.reduce((a, b) => a + b, 0)) * 1000),
+    p50: microseconds(percentile(samples, 50)),
+    p95: microseconds(percentile(samples, 95)),
+    p99: microseconds(percentile(samples, 99)),
+    opsPerSec: Math.round(
+      (iterations / samples.reduce((total, sample) => total + sample, 0)) * 1000,
+    ),
   };
 }
 
-const kb = (text) => `${(Buffer.byteLength(text) / 1024).toFixed(1)} KB`;
+/** Size of a string in kilobytes, as UTF-8 bytes. */
+const kilobytes = (text) => `${(Buffer.byteLength(text) / 1024).toFixed(1)} KB`;
 
 console.log('\n## Engine latency (10 000 runs each)\n');
 console.log('| Brief | p50 | p95 | p99 | plans/sec |\n| :-- | --: | --: | --: | --: |');
 for (const [name, brief] of Object.entries(BRIEFS)) {
-  const r = time(() => buildPlan(brief, PLANNED_ON), 10_000);
+  const planTiming = measure(() => buildPlan(brief, PLANNED_ON), 10_000);
   console.log(
-    `| ${name} | ${r.p50} | ${r.p95} | ${r.p99} | ${r.opsPerSec.toLocaleString('en-IN')} |`,
+    `| ${name} | ${planTiming.p50} | ${planTiming.p95} | ${planTiming.p99} | ${planTiming.opsPerSec.toLocaleString('en-IN')} |`,
   );
 }
 const plan = buildPlan(BRIEFS.wedding, PLANNED_ON);
-const spend = time(
+const spend = measure(
   () => summarizeSpending(plan.budget.lines, { venue: 400_000, decor: 300_000 }),
   10_000,
 );
-const ics = time(() => toICalendar(plan), 2_000);
+const calendarTiming = measure(() => toICalendar(plan), 2_000);
 console.log(
   `| spending summary | ${spend.p50} | ${spend.p95} | ${spend.p99} | ${spend.opsPerSec.toLocaleString('en-IN')} |`,
 );
 console.log(
-  `| calendar export | ${ics.p50} | ${ics.p95} | ${ics.p99} | ${ics.opsPerSec.toLocaleString('en-IN')} |`,
+  `| calendar export | ${calendarTiming.p50} | ${calendarTiming.p95} | ${calendarTiming.p99} | ${calendarTiming.opsPerSec.toLocaleString('en-IN')} |`,
 );
 
 console.log('\n## Memory\n');
 globalThis.gc?.();
 const before = process.memoryUsage().heapUsed;
-for (let i = 0; i < 50_000; i += 1)
-  buildPlan(BRIEFS[['wedding', 'birthday', 'community'][i % 3]], PLANNED_ON);
+for (let plan = 0; plan < 50_000; plan += 1)
+  buildPlan(BRIEFS[['wedding', 'birthday', 'community'][plan % 3]], PLANNED_ON);
 globalThis.gc?.();
 const after = process.memoryUsage().heapUsed;
 console.log(
@@ -108,9 +112,9 @@ console.log(
 console.log('\n## Payloads\n');
 console.log(`| Item | Size |\n| :-- | --: |`);
 console.log(
-  `| Full wedding plan as JSON (never sent over the network) | ${kb(JSON.stringify(plan))} |`,
+  `| Full wedding plan as JSON (never sent over the network) | ${kilobytes(JSON.stringify(plan))} |`,
 );
 console.log(
-  `| Saved progress in localStorage (brief + ticks) | ${kb(JSON.stringify({ version: 1, brief: BRIEFS.wedding, plannedOn: PLANNED_ON, done: plan.tasks.slice(0, 10).map((t) => t.id), vendorStatus: {}, spent: { venue: 400000 }, aiIdeas: [] }))} |`,
+  `| Saved progress in localStorage (brief + ticks) | ${kilobytes(JSON.stringify({ version: 1, brief: BRIEFS.wedding, plannedOn: PLANNED_ON, done: plan.tasks.slice(0, 10).map((task) => task.id), vendorStatus: {}, spent: { venue: 400000 }, aiIdeas: [] }))} |`,
 );
-console.log(`| Calendar export (.ics) | ${kb(toICalendar(plan))} |`);
+console.log(`| Calendar export (.ics) | ${kilobytes(toICalendar(plan))} |`);

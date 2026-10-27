@@ -3,9 +3,9 @@ import { useId, useState } from 'react';
 import { Alert } from '../ui/Alert.js';
 
 /** Shortest description worth sending; matches the server’s limit. */
-export const DESCRIPTION_MIN = 15;
+const DESCRIPTION_MIN = 15;
 /** Longest description accepted; matches the server’s limit. */
-export const DESCRIPTION_MAX = 2000;
+const DESCRIPTION_MAX = 2000;
 
 interface DescribeFormProps {
   readonly busy: boolean;
@@ -13,6 +13,7 @@ interface DescribeFormProps {
   readonly onSubmit: (description: string) => void;
 }
 
+/** One button per event type that fills the box with a sample description. */
 function ExampleButtons({
   onPick,
 }: {

@@ -11,6 +11,7 @@ interface AiIdeasSectionProps {
   readonly onRequestAi: () => void;
 }
 
+/** Label for the request button in its current state. */
 function buttonLabel(busy: boolean, hasIdeas: boolean): string {
   if (busy) {
     return 'Thinking up ideas…';

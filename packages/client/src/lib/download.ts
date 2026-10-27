@@ -3,12 +3,12 @@
  * uploaded anywhere and the strict CSP needs no exception.
  */
 export function downloadFile(filename: string, content: string, mimeType: string): void {
-  const url = URL.createObjectURL(new Blob([content], { type: mimeType }));
+  const objectUrl = URL.createObjectURL(new Blob([content], { type: mimeType }));
   const link = document.createElement('a');
-  link.href = url;
+  link.href = objectUrl;
   link.download = filename;
   link.click();
-  URL.revokeObjectURL(url);
+  URL.revokeObjectURL(objectUrl);
 }
 
 /** "Asha & Rohan's wedding" → "asha-rohan-s-wedding". */

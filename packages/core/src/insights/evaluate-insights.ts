@@ -11,11 +11,11 @@ const PLACEHOLDER = /\{(\w+)\}/g;
  */
 export function interpolate(template: string, context: PlanningContext): string {
   return template.replace(PLACEHOLDER, (whole, field: string) => {
-    const value = context[field];
-    if (typeof value === 'number') {
-      return value.toLocaleString('en-IN');
+    const contextValue = context[field];
+    if (typeof contextValue === 'number') {
+      return contextValue.toLocaleString('en-IN');
     }
-    return typeof value === 'string' ? value : whole;
+    return typeof contextValue === 'string' ? contextValue : whole;
   });
 }
 
@@ -26,7 +26,7 @@ export function evaluateInsights(
 ): Insight[] {
   return rules
     .filter((rule) => applies(rule.when, context))
-    .sort((a, b) => SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity])
+    .sort((first, second) => SEVERITY_ORDER[first.severity] - SEVERITY_ORDER[second.severity])
     .map((rule) => ({
       id: rule.id,
       severity: rule.severity,

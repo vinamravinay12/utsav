@@ -33,8 +33,9 @@ export interface SpendingSummary {
 }
 
 /** Spend at or above this share of a category's allocation is flagged early. */
-export const NEAR_LIMIT = 0.9;
+const NEAR_LIMIT = 0.9;
 
+/** How a category’s spend compares with its allocation. */
 function statusOf(spent: number, allocated: number): SpendStatus {
   if (spent === 0) {
     return 'unspent';
@@ -57,6 +58,10 @@ function donorRank(line: SpendingLine): number {
   return line.prioritised ? 2 : 1;
 }
 
+/**
+ * Covers each overspent category from donors in `donorRank` order, largest
+ * overspend first, and reports whatever no donor can cover.
+ */
 function suggestReallocations(lines: readonly SpendingLine[]): {
   suggestions: Reallocation[];
   uncovered: number;
@@ -64,10 +69,13 @@ function suggestReallocations(lines: readonly SpendingLine[]): {
   const donors = lines
     .filter((line) => line.remaining > 0)
     .map((line) => ({ line, headroom: line.remaining }))
-    .sort((a, b) => donorRank(a.line) - donorRank(b.line) || b.headroom - a.headroom);
+    .sort(
+      (first, second) =>
+        donorRank(first.line) - donorRank(second.line) || second.headroom - first.headroom,
+    );
   const overspent = lines
     .filter((line) => line.status === 'over')
-    .sort((a, b) => a.remaining - b.remaining);
+    .sort((first, second) => first.remaining - second.remaining);
   const suggestions: Reallocation[] = [];
   let uncovered = 0;
   for (const over of overspent) {
@@ -113,8 +121,8 @@ export function summarizeSpending(
       isContingency: line.isContingency,
     };
   });
-  const totalAllocated = lines.reduce((sum, line) => sum + line.allocated, 0);
-  const totalSpent = lines.reduce((sum, line) => sum + line.spent, 0);
+  const totalAllocated = lines.reduce((total, line) => total + line.allocated, 0);
+  const totalSpent = lines.reduce((total, line) => total + line.spent, 0);
   return {
     lines,
     totalAllocated,
